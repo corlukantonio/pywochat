@@ -1,0 +1,288 @@
+#searchEngine,
+#searchForm
+{
+  display: block;
+  position: relative;
+  margin: 0 auto;
+}
+
+#searchResultsTop5
+{
+  position: relative;
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 1020;
+  background: #F0F0F0;
+}
+
+.search_results
+{
+  display: none;
+  position: relative;
+  width: 100%;
+  height: 42px;
+  margin-top: 6px;
+  background: #FFF;
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px rgba(0, 0, 0, .12);
+  z-index: 1020;
+}
+
+.found_user
+{
+  display: inline-block;
+  padding: 12px 0 12px 12px;
+  color: #616161;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.add_user_section
+{
+  display: inline-block;
+  position: relative;
+  padding-right: 12px;
+  padding-top: 8px;
+  float: right;
+}
+
+.btn.add
+{
+  padding: 2px 12px;
+  margin-right: 2px;
+}
+
+.new_contact_added
+{
+  background: transparent;
+  color: #616161;
+  border: none;
+  box-shadow: none;
+  cursor: default;
+  transition: none;
+}
+
+.new_contact_added:active
+{
+  border: none;
+  background: transparent;
+  transition: none;
+}
+
+#chatFrame
+{
+  position: fixed;
+  top: 174px;
+  left: 0;
+  width: 100%;
+  z-index: 1019
+}
+
+#chatInner
+{
+  position: relative;
+  width: 100%;
+  background: #FFF;
+  overflow: hidden;
+}
+
+#chatContacts
+{
+  position: relative;
+  float: left;
+  display: inline-block;
+  width: 35%;
+  height: 100%;
+  background: #F0F0F0;
+  overflow-y: auto;
+}
+
+#searchResultsTop5::-webkit-scrollbar,
+#chatContacts::-webkit-scrollbar,
+#messagesView::-webkit-scrollbar
+{
+    width: 8px;
+}
+
+#searchResultsTop5::-webkit-scrollbar-track,
+#chatContacts::-webkit-scrollbar-track,
+#messagesView::-webkit-scrollbar-track
+{
+    background: #F0F0F0;
+}
+
+#searchResultsTop5::-webkit-scrollbar-thumb,
+#chatContacts::-webkit-scrollbar-thumb,
+#messagesView::-webkit-scrollbar-thumb
+{
+    background: #BDBDBD;
+}
+
+#searchResultsTop5::-webkit-scrollbar-thumb:hover,
+#chatContacts::-webkit-scrollbar-thumb:hover,
+#messagesView::-webkit-scrollbar-thumb:hover
+{
+    background: #616161;
+}
+
+#chatMessages
+{
+  position: relative;
+  float: right;
+  display: inline-block;
+  width: 65%;
+  height: 100%;
+}
+
+.inbox_user
+{
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  background: #fff;
+  border-bottom: 2px solid #F0F0F0;
+  cursor: pointer;
+  transition: all .12s cubic-bezier(.4, 0, .65, .18);
+}
+
+.inbox_user:last-child
+{
+  border-bottom: none;
+}
+
+.inbox_user > span:first-child
+{
+  display: block;
+  padding: 18px 0 0 12px;
+  color: #616161;
+  font-weight: 700;
+  font-size: 15px;
+  z-index: 1050;
+}
+
+.new_message_inbox
+{
+  display: block;
+  min-height: 18px;
+  font-weight: 500;
+  padding: 4px 12px 18px 12px;
+  color: #9E9E9E;
+  font-size: 15px;
+}
+
+.inbox_user:active
+{
+  background: #BDBDBD;
+  transition: all .12s cubic-bezier(.35, .82, .4, 1);
+}
+
+#targetUser
+{
+  display: inline-block;
+  width: 100%;
+  height: 42px;
+  background: #26A69A;
+  text-align: center;
+  border-bottom: 2px solid #BDBDBD;
+}
+
+#targetUser > span
+{
+  display: inline-block;
+  padding: 12px 0;
+  color: #FFF;
+}
+
+#messagesView
+{
+  background: #ECEFF1;
+  overflow-y: auto;
+}
+
+.sent_message
+{
+  display: block;
+  min-height: 42px;
+  padding: 2px 24px 8px 24px;
+}
+
+.sent_message.first_message
+{
+  padding: 24px 24px 0 24px;
+}
+
+.sent_message
+{
+  display: none;
+}
+
+.sent_message.sender
+{
+  text-align: right;
+}
+
+.sent_message.reciver > .msg_wrapper
+{
+  display: inline-block;
+  padding: 12px 12px;
+  font-size: 15px;
+  border-radius: 4px;
+  background: #26A69A;
+  color: #FFF;
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px rgba(0, 0, 0, .12);
+}
+
+.sent_message.sender > .msg_wrapper
+{
+  display: inline-block;
+  padding: 12px 12px;
+  font-size: 15px;
+  border-radius: 4px;
+  background: #FFF;
+  color: #616161;
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px rgba(0, 0, 0, .12);
+}
+
+.sent_message > .msg_wrapper > span
+{
+  display: block;
+  max-width: 220px;
+  text-align: left;
+  word-break: break-word;
+}
+
+.sent_time
+{
+  display: block;
+  font-size: 12px;
+  color: #BDBDBD;
+  padding: 4px 0;
+}
+
+.sent_message.sender > .sent_time
+{
+  text-align: right;
+}
+
+#composeMessage
+{
+  display: table;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  border-top: 2px solid #F0F0F0;
+}
+
+.req_section.write,
+.req_section.send
+{
+  display: table-cell;
+  width: auto;
+  padding: 24px 6px 24px 24px;
+  vertical-align: middle;
+}
+
+.req_section.send
+{
+  width: 64px;
+  padding: 24px 24px 24px 6px;
+}

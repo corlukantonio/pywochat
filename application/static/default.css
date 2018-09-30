@@ -1,0 +1,127 @@
+body
+{
+  margin: 0;
+  width: 100%;
+  background: #F0F0F0;
+  font-family: RobotoDraft, sans-serif;
+}
+
+.container
+{
+  position: relative;
+  padding: 0 24px;
+  margin: 0 auto;
+  max-width: 1164px;
+  z-index: 1002;
+}
+
+._ttl
+{
+  display: inline-block;
+  position: absolute;
+  top: 24px;
+  margin-top: 12px;
+  color: #BDBDBD;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: .1px;
+  pointer-events: none;
+  transition: all .2s cubic-bezier(.4, 0, .65, .18);
+}
+
+._input_txt:focus ~ ._ttl,
+._input_txt:valid ~ ._ttl
+{
+  top: 0;
+  font-size: 12px;
+  line-height: 18px;
+  cursor: pointer;
+  pointer-events: all;
+  transition: all .2s cubic-bezier(.35, .82, .4, 1);
+}
+
+._input_txt:focus ~ ._ttl
+{
+  color: #00796B;
+}
+
+._input_txt:focus:valid ~ ._ttl
+{
+  color: #00796B;
+}
+
+._input_txt:valid ~ ._ttl
+{
+  color: #616161;
+}
+
+._input_txt:focus,
+._input_txt:focus
+{
+  border-bottom: 2px solid #26A69A;
+  transition: all .12s cubic-bezier(.35, .82, .4, 1);
+}
+
+._input_txt
+{
+  display: block;
+  margin-bottom: 4px;
+  padding: 6px 0;
+  width: 100%;
+  outline: none;
+  border: none;
+  border-bottom: 2px solid #BDBDBD;
+  background: none;
+  color: #000;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: .1px;
+  transition: all .12s cubic-bezier(.4, 0, .65, .18);
+}
+
+.btn
+{
+  display: inline-block;
+  margin-bottom: 4px;
+  padding: 8px 12px;
+  outline: none;
+  border-radius: 4px;
+  border: 2px solid #26A69A;
+  background: #26A69A;
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px rgba(0, 0, 0, .12);
+  color: #FFF;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 18px;
+  text-transform: uppercase;
+  letter-spacing: .1px;
+  cursor: pointer;
+  transition: all .12s cubic-bezier(.4, 0, .65, .18);
+}
+
+.btn:active
+{
+  border: 2px solid #00796B;
+  background: #00796B;
+  transition: all .12s cubic-bezier(.35, .82, .4, 1);
+}
+
+/* INPUT Default Style */
+input
+{
+  font-family: RobotoDraft, sans-serif;
+}
+
+/* LINK Default Style */
+a,
+a:link
+{
+  text-decoration: none;
+}
+
+@media only screen and (max-width: 720px) {
+  .container
+  {
+    padding: 0 16px;
+  }
+}

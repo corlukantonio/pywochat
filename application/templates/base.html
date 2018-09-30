@@ -1,0 +1,65 @@
+<!DOCTYPE html />
+
+<html>
+  <head>
+    <title>Pywo Chat - {% block title %}{% endblock %}</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <link href='https://fonts.googleapis.com/css?family=RobotoDraft:400,500,700' rel='stylesheet' type='text/css' />
+    <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css' />
+
+    <link href='{{ url_for('static', filename='base.css') }}' rel='stylesheet' type='text/css' />
+    <link href='{{ url_for('static', filename='default.css') }}' rel='stylesheet' type='text/css' />
+    <link href='{{ url_for('static', filename='header.css') }}' rel='stylesheet' type='text/css' />
+    <link href='{{ url_for('static', filename='index.css') }}' rel='stylesheet' type='text/css' />
+  </head>
+  <body>
+    <div id='hPush'></div>
+    {% if g.user %}
+      <!-- User is logged in -->
+      <div id='header' class='online'>
+        <div class='container'>
+          <div id='hLogo' class='online'>
+            <a href='' target='_self' draggable='false'>Pywo Chat</a>
+          </div>
+          <div id='hBtns'>
+            <div class='btns_section online'>
+              <a href='' class='btn' name='nameBtn' target='_self' draggable='false' tabindex='1'>
+                {{ g.user['firstname'] + ' ' + g.user['lastname'] }}
+                <span id='currentUser' style='display: none;'>{{ g.user['username'] }}</span>
+              </a>
+            </div>
+            <div class='btns_section online'>
+              <a href='{{ url_for('auth.logout') }}' class='btn' name='outBtn' target='_self' draggable='false' tabindex='2'>Odjavite se</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <!-- User is not logged in -->
+      <div id='header' class='offline'>
+        <div class='container'>
+          <div id='hLogo' class='offline'>
+            <a href='' target='_self' draggable='false'>Pywo Chat</a>
+          </div>
+          <div id='hBtns'>
+            <div class='btns_section offline'>
+              <a href='{{ url_for('auth.login') }}' class='btn' name='logBtn' target='_self' draggable='false' tabindex='1' />Prijavite se</a>
+            </div>
+            <div class='btns_section offline'>
+              <a href='{{ url_for('auth.register') }}' class='btn' name='regBtn' target='_self' draggable='false' tabindex='2'>Izradite račun</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <div id='content'>
+      <div class='container'>
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </body>
+</html>

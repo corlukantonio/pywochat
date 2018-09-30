@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  {% block title %}Naslovnica{% endblock %}
+{% endblock %}
+
+{% block content %}
+  {% if g.user %}
+    <div id='searchEngine'>
+      <form id='searchForm' autocomplete='off'>
+        <div class='req_section'>
+          <input type='text' onkeyup='filterAllContacts();' class='_input_txt' id='searchInput' name='username' value='' tabindex='1' maxlength='30' required />
+          <label class='_ttl' for='username'>Pretražite</label>
+        </div>
+      </form>
+      <div id='searchResultsTop5'>
+        {% for searched_contact in all_contacts %}
+        <div class='search_results'>
+          <span class='found_user'>{{ searched_contact['firstname'] + ' ' + searched_contact['lastname'] + ' (' + searched_contact['username'] + ')' }}</span>
+          <div class='add_user_section'>
+            <!-- If the user is already in your contacts, you won't see this button. -->
+            <a class='btn add add_new_contact' onclick='newContactAddClass(this);'>Dodaj</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div id='chatFrame'>
+      <div class='container'>
+        <div id='chatInner'>
+          <div id='chatContacts'>
+            {% if g.user %}
+              {% for my_contact in my_contacts %}
+                <div class='inbox_user'>
+                  <span>{{ my_contact['firstname'] + ' ' + my_contact['lastname'] + ' (' + my_contact['user_2'] + ')' }}</span>
+                  <span class='new_message_inbox'></span>
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+          <div id='chatMessages'>
+            <div id='targetUser'>
+              <span></span>
+            </div>
+            <div id='messagesView'>
+              {% for my_message in my_messages %}
+                {% if g.user['username'] == my_message['username'] %}
+                  <div class='sent_message sender'>
+                    <span class='msg_info' style='display: none;'>{{ my_message['username'] + ' ' + my_message['username_reciver'] }}</span>
+                    <div class='msg_wrapper'>
+                      <span>{{ my_message['content'] }}</span>
+                    </div>
+                    <span class='sent_time'>{{ my_message['created'] }}</span>
+                  </div>
+                {% else %}
+                  <div class='sent_message reciver'>
+                    <span class='msg_info' style='display: none;'>{{ my_message['username'] + ' ' + my_message['username_reciver'] }}</span>
+                    <div class='msg_wrapper'>
+                      <span>{{ my_message['content'] }}</span>
+                    </div>
+                    <span class='sent_time'>{{ my_message['created'] }}</span>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <div id='composeMessage'>
+              <div class='req_section write'>
+                <input type='text' class='_input_txt' id='inputMsg' name='inputMsg' placeholder='Unesite poruku' value='' tabindex='3' required />
+              </div>
+              <div class='req_section send'>
+                <input type='button' class='btn' id='sendMsg' value='Pošaljite' />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js'></script>
+    <script>
+      $(document).ready(function() {
+        var socket = io.connect('http://127.0.0.1:5000');
+
+        $(window).on('click.Bst', function (event) {
+          if ($('#searchEngine').has(event.target).length == 0 && !($('#searchEngine').is(event.target))) {
+            // Outside
+            $('.search_results').each(function() {
+              $(this).css('display', 'none');
+            });
+          }
+        });
+
+        socket.on('connect', function() {
+          console.log('User has connected!');
+          var sentMessage = $('.sent_message');
+          var userSender;
+          var inboxUser = $('.inbox_user');
+
+          for (var i = 0; i < sentMessage.length; i++) {
+            userSender = $($('.msg_info')[i]).text().split(' ');
+            for (var j = 0; j < inboxUser.length; j++) {
+              if ($($(inboxUser[j]).children()[0]).text().indexOf(userSender[0]) > -1 || $($(inboxUser[j]).children()[0]).text().indexOf(userSender[1]) > -1) {
+                $($(inboxUser[j]).children()[1]).text($($($(sentMessage[i]).children()[1]).children()[0]).text());
+              }
+            }
+          }
+
+          var addNewContactBtn = $('.add_new_contact');
+          var foundUser = $('.found_user');
+
+          for (var i = 0; i < addNewContactBtn.length; i++) {
+            if (($(foundUser[i]).text()).indexOf($('#currentUser').text()) > -1) {
+              $(addNewContactBtn[i]).css('display', 'none');
+            }
+
+            for (var j = 0; j < inboxUser.length; j++) {
+              if ($($(inboxUser[j]).children()[0]).text().indexOf($(foundUser[i]).text()) > -1) {
+                $(addNewContactBtn[i]).addClass('new_contact_added');
+                $(addNewContactBtn[i]).text('Dodano');
+                $(addNewContactBtn[i]).css('margin-right', 0 + 'px');
+                $(addNewContactBtn[i]).css('margin-top', 2 + 'px');
+              }
+            }
+          }
+
+        });
+
+        socket.on('message', function(args) {
+          var d = new Date();
+          var month = d.getMonth() + 1;
+          var year = d.getFullYear();
+
+          var targetInboxUser = $('#targetUser span').text();
+          targetInboxUser = targetInboxUser.replace('(', '');
+          targetInboxUser = targetInboxUser.replace(')', '');
+          targetInboxUserArr = targetInboxUser.split(' ');
+
+          var inboxUser = $('.inbox_user');
+
+          if (args[1] == $('#currentUser').text()) {
+            $('#messagesView').append(
+              "<div style='display: block;' class='sent_message sender'>" +
+                "<span class='msg_info' style='display: none;'>" + args[1] + ' ' + args[2][2] + "</span>" +
+                "<div class='msg_wrapper'>" +
+                  "<span>" + args[0] + "</span>" +
+                "</div>" +
+                "<span class='sent_time'>" + d.getDate() + '.' + month + '.' + year + '. ' + d.getHours() + ':' + d.getMinutes() + "</span>" +
+              "</div>"
+            );
+            for (var i = 0; i < inboxUser.length; i++) {
+              if ($($(inboxUser[i]).children()[0]).text().indexOf(args[2][2]) > -1) {
+                $($(inboxUser[i]).children()[1]).text(args[0]);
+              }
+            }
+          }
+          else {
+            $('#messagesView').append(
+              "<div style='display: block;' class='sent_message reciver'>" +
+                "<span class='msg_info' style='display: none;'>" + args[2][2] + ' ' + args[1] + "</span>" +
+                "<div class='msg_wrapper'>" +
+                  "<span>" + args[0] + "</span>" +
+                "</div>" +
+                "<span class='sent_time'>" + d.getDate() + '.' + month + '.' + year + '. ' + d.getHours() + ':' + d.getMinutes() + "</span>" +
+              "</div>"
+            );
+            for (var j = 0; j < inboxUser.length; j++) {
+              if ($($(inboxUser[j]).children()[0]).text().indexOf(args[1]) > -1 && $('#currentUser').text().indexOf(args[2][2]) > -1) {
+                $($(inboxUser[j]).children()[1]).text(args[0]);
+              }
+            }
+          }
+
+          var sentMsg = $('.sent_message');
+          var msgInfo;
+          var firstMessage = true;
+
+          for (var i = 0; i < sentMsg.length; i++) {
+            msgInfo = $($('.msg_info')[i]).text().split(' ');
+            if ((msgInfo[0] == $('#currentUser').text() && msgInfo[1] == targetInboxUserArr[2]) || (msgInfo[0] == targetInboxUserArr[2] && msgInfo[1] == $('#currentUser').text())) {
+              $(sentMsg[i]).css('display', 'block');
+              if (firstMessage) {
+                $(sentMsg[i]).addClass('first_message');
+                firstMessage = false;
+              }
+            }
+            else {
+              $(sentMsg[i]).css('display', 'none');
+            }
+          }
+          $('#messagesView').scrollTop($('#messagesView')[0].scrollHeight);
+        });
+
+        function targetUsername() {
+          var targetInboxUser = $(event.target).text();
+          if ($(event.target).hasClass('new_message_inbox')) {
+            targetInboxUser = ($($($(event.target).parent()).children()[0]).text());
+          }
+          else if ($(event.target).hasClass('inbox_user')) {
+            targetInboxUser = $($(event.target).children()[0]).text();
+          }
+          return targetInboxUser;
+        }
+
+        function sendMessage() {
+          if ($('#inputMsg').val() != '') {
+            console.log('Message sent.');
+            var targetInboxUser = $('#targetUser span').text();
+            targetInboxUser = targetInboxUser.replace('(', '');
+            targetInboxUser = targetInboxUser.replace(')', '');
+            targetInboxUserArr = targetInboxUser.split(' ');
+            if (targetInboxUser != '') {
+              socket.send($('#inputMsg').val(), $('#currentUser').text(), targetInboxUserArr);
+              $('#inputMsg').val('');
+            }
+          }
+        }
+
+        $('#inputMsg').keypress(function(e) {
+          if (e.which == '13') {
+            sendMessage();
+          }
+        });
+
+        $('#sendMsg').on('click', function() {
+          sendMessage();
+        });
+
+        $('.add_new_contact').on('click', function(event) {
+          console.log('Contact added.');
+          var targetUserData = $($(event.target).parent().parent().children()[0]).text();
+          var targetUserData = targetUserData.replace('(', '');
+          var targetUserData = targetUserData.replace(')', '');
+          var targetUserDataArr = targetUserData.split(' ');
+          socket.emit('add_new_contact_event', $('#currentUser').text(), targetUserDataArr);
+        });
+
+        $('.inbox_user').on('click', function(event) {
+          console.log('Contact chosen.');
+          var targetInboxUser = targetUsername();
+          $('#targetUser span').text(targetInboxUser);
+          targetInboxUser = targetInboxUser.replace('(', '');
+          targetInboxUser = targetInboxUser.replace(')', '');
+          targetInboxUserArr = targetInboxUser.split(' ');
+
+          var sentMsg = $('.sent_message');
+          var msgInfo;
+          var firstMessage = true;
+
+          for (var i = 0; i < sentMsg.length; i++) {
+            msgInfo = $($('.msg_info')[i]).text().split(' ');
+            if ((msgInfo[0] == $('#currentUser').text() && msgInfo[1] == targetInboxUserArr[2]) || (msgInfo[0] == targetInboxUserArr[2] && msgInfo[1] == $('#currentUser').text())) {
+              $(sentMsg[i]).css('display', 'block');
+              if (firstMessage) {
+                $(sentMsg[i]).addClass('first_message');
+                firstMessage = false;
+              }
+            }
+            else {
+              $(sentMsg[i]).css('display', 'none');
+            }
+          }
+          $('#messagesView').scrollTop($('#messagesView')[0].scrollHeight);
+
+          socket.emit('choose_contact', $('#currentUser').text(), targetInboxUserArr);
+        });
+      });
+    </script>
+    <script type='text/javascript'>
+      var chatFrame = document.getElementById('chatFrame');
+      var chatInner = document.getElementById('chatInner');
+      var messagesView = document.getElementById('messagesView');
+      var composeMessage = document.getElementById('composeMessage');
+      var targetUser = document.getElementById('targetUser');
+
+      var search_results = document.getElementsByClassName('search_results');
+      var all_users = document.getElementsByClassName('found_user');
+      var searchInputValue;
+
+      onload = function () {
+        chatInner.style.height = window.innerHeight - chatFrame.offsetTop + 'px';
+        messagesView.style.height = chatInner.offsetHeight - composeMessage.offsetHeight - targetUser.offsetHeight + 'px';
+      };
+
+      window.onresize = function () {
+        chatInner.style.height = window.innerHeight - chatFrame.offsetTop + 'px';
+        messagesView.style.height = chatInner.offsetHeight - composeMessage.offsetHeight - targetUser.offsetHeight + 'px';
+      };
+
+      function newContactAddClass(element) {
+        element.classList.add('new_contact_added');
+        element.innerHTML = 'Dodano';
+        element.style.marginRight = 0 + 'px';
+        element.style.marginTop = 2 + 'px';
+      }
+
+      function filterAllContacts() {
+        searchInputValue = document.getElementById('searchInput').value.toUpperCase();
+
+        for (var i = 0; i < all_users.length; i++) {
+          if (all_users) {
+            if (searchInputValue == '') {
+              search_results[i].style.display = 'none';
+            }
+            else if (all_users[i].innerHTML.toUpperCase().indexOf(searchInputValue) > -1) {
+              search_results[i].style.display = 'block';
+            }
+            else {
+              search_results[i].style.display = 'none';
+            }
+          }
+        }
+      }
+    </script>
+  {% endif %}
+{% endblock %}
