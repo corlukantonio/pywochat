@@ -98,33 +98,33 @@
 
 #searchResultsTop5::-webkit-scrollbar,
 #chatContacts::-webkit-scrollbar,
-#messagesView::-webkit-scrollbar
+#msgsView::-webkit-scrollbar
 {
     width: 8px;
 }
 
 #searchResultsTop5::-webkit-scrollbar-track,
 #chatContacts::-webkit-scrollbar-track,
-#messagesView::-webkit-scrollbar-track
+#msgsView::-webkit-scrollbar-track
 {
     background: #F0F0F0;
 }
 
 #searchResultsTop5::-webkit-scrollbar-thumb,
 #chatContacts::-webkit-scrollbar-thumb,
-#messagesView::-webkit-scrollbar-thumb
+#msgsView::-webkit-scrollbar-thumb
 {
     background: #BDBDBD;
 }
 
 #searchResultsTop5::-webkit-scrollbar-thumb:hover,
 #chatContacts::-webkit-scrollbar-thumb:hover,
-#messagesView::-webkit-scrollbar-thumb:hover
+#msgsView::-webkit-scrollbar-thumb:hover
 {
     background: #616161;
 }
 
-#chatMessages
+#chatMsgs
 {
   position: relative;
   float: right;
@@ -159,7 +159,7 @@
   z-index: 1050;
 }
 
-.new_message_inbox
+.inbox_last_msg
 {
   display: block;
   min-height: 18px;
@@ -192,35 +192,40 @@
   color: #FFF;
 }
 
-#messagesView
+#msgsView
 {
   background: #ECEFF1;
   overflow-y: auto;
 }
 
-.sent_message
+.msg_info
+{
+  display: none;
+}
+
+.sent_msgs
 {
   display: block;
   min-height: 42px;
   padding: 2px 24px 8px 24px;
 }
 
-.sent_message.first_message
+.sent_msgs.first_message
 {
   padding: 24px 24px 0 24px;
 }
 
-.sent_message
+.sent_msgs
 {
   display: none;
 }
 
-.sent_message.sender
+.sent_msgs.sender
 {
   text-align: right;
 }
 
-.sent_message.reciver > .msg_wrapper
+.sent_msgs.reciver > .msg_wrapper
 {
   display: inline-block;
   padding: 12px 12px;
@@ -231,7 +236,7 @@
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px rgba(0, 0, 0, .12);
 }
 
-.sent_message.sender > .msg_wrapper
+.sent_msgs.sender > .msg_wrapper
 {
   display: inline-block;
   padding: 12px 12px;
@@ -242,7 +247,7 @@
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px rgba(0, 0, 0, .12);
 }
 
-.sent_message > .msg_wrapper > span
+.sent_msgs > .msg_wrapper > span
 {
   display: block;
   max-width: 220px;
@@ -258,12 +263,12 @@
   padding: 4px 0;
 }
 
-.sent_message.sender > .sent_time
+.sent_msgs.sender > .sent_time
 {
   text-align: right;
 }
 
-#composeMessage
+#composeMsg
 {
   display: table;
   position: absolute;
