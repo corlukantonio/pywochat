@@ -14,6 +14,9 @@
     <link href='{{ url_for('static', filename='default.css') }}' rel='stylesheet' type='text/css' />
     <link href='{{ url_for('static', filename='header.css') }}' rel='stylesheet' type='text/css' />
     <link href='{{ url_for('static', filename='index.css') }}' rel='stylesheet' type='text/css' />
+    <link href='{{ url_for('static', filename='profile.css') }}' rel='stylesheet' type='text/css' />
+
+    {{ JSGlue.include() }}
   </head>
   <body>
     <div id='hPush'></div>
@@ -22,11 +25,11 @@
       <div id='header' class='online'>
         <div class='container'>
           <div id='hLogo' class='online'>
-            <a href='' target='_self' draggable='false'>Pywo Chat</a>
+            <a href='{{ url_for('chat.index') }}' target='_self' draggable='false'>Pywo Chat</a>
           </div>
           <div id='hBtns'>
             <div class='btns_section online'>
-              <a href='' class='btn' name='nameBtn' target='_self' draggable='false' tabindex='1'>
+              <a href='{{ url_for('chat.profile', currentUsername = g.user["username"]) }}' class='btn' name='nameBtn' target='_self' draggable='false' tabindex='1'>
                 {{ g.user['firstname'] + ' ' + g.user['lastname'] }}
                 <span id='currentUser' style='display: none;'>{{ g.user['username'] }}</span>
               </a>

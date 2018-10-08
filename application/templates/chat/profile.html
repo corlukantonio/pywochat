@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  {% block title %}Naslovnica{% endblock %}
+{% endblock %}
+
+{% block content %}
+  {% if g.user %}
+    <div id='profileFrame'>
+      <div id='profileUserPic'>
+      <form method='post' id='importUserPic'>
+        <input type='file' id='importUserPicFile' name='picture' accept='image/*'>
+      </form>
+      {% if g.user['picture'] %}
+      {% else %}
+        <img src='{{ url_for('static', filename='user_picture_placeholder.jpg') }}'>
+      {% endif %}
+      </div>
+      <div id='profileUserName'>
+        <span>{{ g.user['firstname'] + ' ' + g.user['lastname'] }}</span>
+      </div>
+    </div>
+    <script src='{{ url_for('static', filename='eventUtility.js') }}' type='text/javascript'></script>
+    <script type='text/javascript'>
+      function submitUserPic() {
+        document.getElementById('importUserPic').submit();
+      }
+
+      eventUtility.addEvent(document, 'change', submitUserPic)
+    </script>
+  {% endif %}
+{% endblock %}

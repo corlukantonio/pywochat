@@ -1,3 +1,4 @@
+import os.path
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -43,3 +44,14 @@ def index():
         return render_template('chat/index.html', all_contacts = all_contacts, my_contacts = my_contacts, my_messages = my_messages)
     else:
         return render_template('chat/index.html', all_contacts = all_contacts)
+
+@bp.route('/profile/<string:currentUsername>', methods=('GET', 'POST'))
+@login_required
+def profile(currentUsername):
+    if request.method == 'POST':
+        db = get_db()
+        picture = request.form['picture']
+
+        return redirect(url_for('chat.profile', currentUsername = g.user['username']))
+
+    return render_template('chat/profile.html')
