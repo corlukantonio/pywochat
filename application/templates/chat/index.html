@@ -113,12 +113,21 @@
           switch (eType) {
             case 'click':
               $('.search_results').each(function() {
+                let searchInputValue = $('#searchInputValue').val().toUpperCase();
                 // If it's clicked outside of search engine, close it
                 if ($('#searchEngine').has(eSrc).length == 0 && !($('#searchEngine').is(eSrc))) {
                   $(this).css('display', 'none');
                 }
                 else {
-                  $(this).css('display', 'block');
+                  if (searchInputValue == '') {
+                    $(this).css('display', 'block');
+                  }
+                  else if ($('.found_user', this).text().toUpperCase().indexOf(searchInputValue) > -1) {
+                    $(this).css('display', 'block');
+                  }
+                  else {
+                    $(this).css('display', 'none');
+                  }
                 }
               });
               // Add new contact button change on click

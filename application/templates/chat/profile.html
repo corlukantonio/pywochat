@@ -8,13 +8,16 @@
   {% if g.user %}
     <div id='profileFrame'>
       <div id='profileUserPic'>
-      <form method='post' id='importUserPic'>
-        <input type='file' id='importUserPicFile' name='picture' accept='image/*'>
-      </form>
-      {% if g.user['picture'] %}
-      {% else %}
-        <img src='{{ url_for('static', filename='user_picture_placeholder.jpg') }}'>
-      {% endif %}
+        <form method='post' id='importUserPic' enctype='multipart/form-data'>
+          <input type='file' id='importUserPicFile' name='file' accept='image/*'>
+        </form>
+        <div>
+        {% if g.user['picture'] %}
+          <img src='{{ url_for('static', filename = g.user['picture']) }}'>
+        {% else %}
+          <img src='{{ url_for('static', filename='user_picture_placeholder.jpg') }}'>
+        {% endif %}
+        </div>
       </div>
       <div id='profileUserName'>
         <span>{{ g.user['firstname'] + ' ' + g.user['lastname'] }}</span>

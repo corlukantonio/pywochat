@@ -11,6 +11,7 @@
   display: block;
   width: 100%;
   margin: 0;
+  z-index: 1800;
 }
 
 #importUserPic > input[type='file']
@@ -38,9 +39,19 @@
   height: 200px;
 }
 
-#profileUserPic > img
+#profileUserPic > div
+{
+  display: table;
+  margin: 0 auto;
+  height: 100%;
+  width: 200px;
+  overflow: hidden;
+}
+
+#profileUserPic > div > img
 {
   display: block;
+  position: relative;
   margin: 0 auto;
   height: 100%;
 }
