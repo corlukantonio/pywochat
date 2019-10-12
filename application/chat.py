@@ -10,6 +10,7 @@ from application.db import get_db
 bp = Blueprint('chat', __name__)
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+
 @bp.route('/')
 def index():
     db = get_db()
@@ -38,13 +39,15 @@ def index():
         my_messages = db.execute(
             'SELECT m.created, m.content, (SELECT u.username FROM user u WHERE u.id = m.author_id) AS username, (SELECT u.username FROM user u WHERE u.id = m.sent_to_id) AS username_reciver'
             ' FROM message m'
-            ' WHERE m.author_id = ? OR m.sent_to_id = ?', (currentUser['id'], currentUser['id'],)
+            ' WHERE m.author_id = ? OR m.sent_to_id = ?', (
+                currentUser['id'], currentUser['id'],)
         ).fetchall()
 
     if user_id:
-        return render_template('chat/index.html', all_contacts = all_contacts, my_contacts = my_contacts, my_messages = my_messages)
+        return render_template('chat/index.html', all_contacts=all_contacts, my_contacts=my_contacts, my_messages=my_messages)
     else:
-        return render_template('chat/index.html', all_contacts = all_contacts)
+        return render_template('chat/index.html', all_contacts=all_contacts)
+
 
 @bp.route('/profile/<string:currentUsername>', methods=('GET', 'POST'))
 @login_required
@@ -71,6 +74,6 @@ def profile(currentUsername):
         )
         db.commit()
 
-        return redirect(url_for('chat.profile', currentUsername = g.user['username']))
+        return redirect(url_for('chat.profile', currentUsername=g.user['username']))
 
     return render_template('chat/profile.html')

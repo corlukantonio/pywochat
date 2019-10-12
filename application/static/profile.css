@@ -1,12 +1,10 @@
-#profileFrame
-{
+#profileFrame {
   display: block;
   position: relative;
   margin: 0 auto;
 }
 
-#importUserPic
-{
+#importUserPic {
   position: absolute;
   display: block;
   width: 100%;
@@ -14,8 +12,7 @@
   z-index: 1800;
 }
 
-#importUserPic > input[type='file']
-{
+#importUserPic > input[type="file"] {
   position: relative;
   display: block;
   margin: 0 auto;
@@ -26,21 +23,18 @@
   cursor: pointer;
 }
 
-#importUserPic > input[type='submit']
-{
+#importUserPic > input[type="submit"] {
   display: none;
 }
 
-#profileUserPic
-{
+#profileUserPic {
   display: block;
   position: relative;
   padding: 16px 0;
   height: 200px;
 }
 
-#profileUserPic > div
-{
+#profileUserPic > div {
   display: table;
   margin: 0 auto;
   height: 100%;
@@ -48,22 +42,19 @@
   overflow: hidden;
 }
 
-#profileUserPic > div > img
-{
+#profileUserPic > div > img {
   display: block;
   position: relative;
   margin: 0 auto;
   height: 100%;
 }
 
-#profileUserName
-{
+#profileUserName {
   display: block;
   text-align: center;
 }
 
-#profileUserName > span
-{
+#profileUserName > span {
   display: block;
   color: #616161;
   font-size: 24px;
