@@ -1,3 +1,8 @@
+
 .vscode
-__pycache__
-application/__pycache__
+
+# Byte-compiled / optimized / DLL files
+application/__pycache__/
+
+# Flask stuff
+instance/
