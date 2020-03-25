@@ -1,8 +1,8 @@
-
 .vscode
+application/static/profile_images/
 
 # Byte-compiled / optimized / DLL files
-application/__pycache__/
+__pycache__/
 
 # Flask stuff
 instance/

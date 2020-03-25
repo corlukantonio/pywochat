@@ -12,12 +12,12 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
+        db = get_db()
+        error = None
         username = request.form['username']
         password = request.form['password']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
-        db = get_db()
-        error = None
 
         if not username:
             error = 'Username is required.'
@@ -28,13 +28,13 @@ def register():
         elif not lastname:
             error = 'Last name is required.'
         elif db.execute(
-            'SELECT id FROM user WHERE username = ?', (username,)
+            'SELECT id FROM users WHERE username = ?', (username,)
         ).fetchone() is not None:
             error = 'User {} is already registered.'.format(username)
 
         if error is None:
             db.execute(
-                'INSERT INTO user (username, password, firstname, lastname) VALUES (?, ?, ?, ?)',
+                'INSERT INTO users (username, password, firstname, lastname) VALUES (?, ?, ?, ?)',
                 (username, generate_password_hash(password), firstname, lastname)
             )
             db.commit()
@@ -48,12 +48,13 @@ def register():
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
         db = get_db()
         error = None
+        username = request.form['username']
+        password = request.form['password']
+
         user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
+            'SELECT * FROM users WHERE username = ?', (username,)
         ).fetchone()
 
         if user is None:
@@ -79,7 +80,7 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
+            'SELECT * FROM users WHERE id = ?', (user_id,)
         ).fetchone()
 
 

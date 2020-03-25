@@ -1,5 +1,6 @@
 {% extends 'base.html' %} {% block header %} {% block title %}Izradite račun{%
 endblock %} {% endblock %} {% block content %}
+<!-- Register form -->
 <form method="post" id="req">
   <div class="req_section">
     <input
@@ -8,7 +9,7 @@ endblock %} {% endblock %} {% block content %}
       id="firstname"
       name="firstname"
       value=""
-      tabindex="1"
+      tabindex="4"
       maxlength="30"
       autocomplete="off"
       required
@@ -22,7 +23,7 @@ endblock %} {% endblock %} {% block content %}
       id="lastname"
       name="lastname"
       value=""
-      tabindex="2"
+      tabindex="5"
       maxlength="30"
       autocomplete="off"
       required
@@ -36,7 +37,7 @@ endblock %} {% endblock %} {% block content %}
       id="username"
       name="username"
       value=""
-      tabindex="3"
+      tabindex="6"
       maxlength="30"
       autocomplete="off"
       required
@@ -50,15 +51,15 @@ endblock %} {% endblock %} {% block content %}
       id="password"
       name="password"
       value=""
-      tabindex="4"
+      tabindex="7"
       maxlength="30"
       autocomplete="off"
       required
     />
     <label class="_ttl" for="password">Lozinka</label>
   </div>
-  <div class="req_section" tabindex="5">
-    <input type="submit" class="btn req" value="Izradite račun" />
+  <div class="req_section">
+    <input type="submit" class="btn req" value="Izradite račun" tabindex="8" />
   </div>
   {% for message in get_flashed_messages() %}
   <div class="flash">{{ message }}</div>

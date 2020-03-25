@@ -16,7 +16,7 @@ def index():
     db = get_db()
     all_contacts = db.execute(
         'SELECT firstname, lastname, username'
-        ' FROM user'
+        ' FROM users'
         ' ORDER BY username'
     ).fetchall()
 
@@ -26,21 +26,33 @@ def index():
         currentUser = None
     else:
         currentUser = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
+            'SELECT * FROM users WHERE id = ?', (user_id,)
         ).fetchone()
 
         my_contacts = db.execute(
             'SELECT DISTINCT u.firstname, u.lastname, c.user_2'
-            ' FROM user u, contact c'
+            ' FROM users u, contacts c'
             ' WHERE u.username = c.user_2'
-            ' AND c.user_1 = ?', (currentUser['username'],)
+            ' AND c.user_1 = ?',
+            (currentUser['username'],)
         ).fetchall()
 
         my_messages = db.execute(
-            'SELECT m.created, m.content, (SELECT u.username FROM user u WHERE u.id = m.author_id) AS username, (SELECT u.username FROM user u WHERE u.id = m.sent_to_id) AS username_reciver'
-            ' FROM message m'
-            ' WHERE m.author_id = ? OR m.sent_to_id = ?', (
-                currentUser['id'], currentUser['id'],)
+            'SELECT m.created, m.content,'
+            ' ('
+            '   SELECT u.username'
+            '   FROM users u'
+            '   WHERE u.id = m.author_id'
+            ' ) AS username,'
+            ' ('
+            '   SELECT u.username'
+            '   FROM users u'
+            '   WHERE u.id = m.sent_to_id'
+            ' ) AS username_receiver'
+            ' FROM messages m'
+            ' WHERE m.author_id = ?'
+            ' OR m.sent_to_id = ?',
+            (currentUser['id'], currentUser['id'],)
         ).fetchall()
 
     if user_id:
@@ -53,7 +65,7 @@ def index():
 @login_required
 def profile(currentUsername):
     if request.method == 'POST':
-        target = os.path.join(APP_ROOT, 'static\profile_images')
+        target = os.path.join(APP_ROOT, 'static\\profile_images')
         user_id = session.get('user_id')
         db = get_db()
 
@@ -69,7 +81,7 @@ def profile(currentUsername):
         short_path = str(short_path[-2] + '/' + short_path[-1])
 
         db.execute(
-            'UPDATE user SET picture = ? WHERE id = ?',
+            'UPDATE users SET picture = ? WHERE id = ?',
             (short_path, user_id)
         )
         db.commit()

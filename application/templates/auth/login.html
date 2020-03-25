@@ -1,5 +1,6 @@
 {% extends 'base.html' %} {% block header %} {% block title %}Prijavite se{%
 endblock %} {% endblock %} {% block content %}
+<!-- Login form -->
 <form method="post" id="req">
   <div class="req_section">
     <input
@@ -8,7 +9,7 @@ endblock %} {% endblock %} {% block content %}
       id="username"
       name="username"
       value=""
-      tabindex="1"
+      tabindex="4"
       maxlength="30"
       autocomplete="off"
       required
@@ -22,15 +23,15 @@ endblock %} {% endblock %} {% block content %}
       id="password"
       name="password"
       value=""
-      tabindex="2"
+      tabindex="5"
       maxlength="30"
       autocomplete="off"
       required
     />
     <label class="_ttl" for="password">Lozinka</label>
   </div>
-  <div class="req_section" tabindex="3">
-    <input type="submit" class="btn req" value="Prijavite se" />
+  <div class="req_section">
+    <input type="submit" class="btn req" value="Prijavite se" tabindex="6" />
   </div>
   {% for message in get_flashed_messages() %}
   <div class="flash">{{ message }}</div>
