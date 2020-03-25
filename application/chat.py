@@ -22,13 +22,15 @@ def index():
 
     user_id = session.get('user_id')
 
-    if user_id is None:
+    currentUser = get_db().execute(
+        'SELECT * FROM users WHERE id = ?', (user_id,)
+    ).fetchone()
+
+    print("SEE THIS!!!")
+
+    if user_id is None or currentUser is None:
         currentUser = None
     else:
-        currentUser = get_db().execute(
-            'SELECT * FROM users WHERE id = ?', (user_id,)
-        ).fetchone()
-
         my_contacts = db.execute(
             'SELECT DISTINCT u.firstname, u.lastname, c.user_2'
             ' FROM users u, contacts c'
@@ -55,7 +57,7 @@ def index():
             (currentUser['id'], currentUser['id'],)
         ).fetchall()
 
-    if user_id:
+    if user_id and currentUser is not None:
         return render_template('chat/index.html', all_contacts=all_contacts, my_contacts=my_contacts, my_messages=my_messages)
     else:
         return render_template('chat/index.html', all_contacts=all_contacts)
