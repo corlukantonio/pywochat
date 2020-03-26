@@ -4,14 +4,13 @@ from flask import (
     Flask, Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 
-from app import get_db
-
 
 bp = Blueprint('chat', __name__)
 
 
 @bp.route('/')
 def index():
+    from app import get_db
     db = get_db()
 
     all_contacts = db.session.execute(

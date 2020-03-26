@@ -5,8 +5,6 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app import get_db
-
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -14,6 +12,7 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
+        from app import get_db
         db = get_db()
         error = None
 
@@ -58,6 +57,7 @@ def register():
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
+        from app import get_db
         db = get_db()
         error = None
         username = request.form['username']
@@ -86,6 +86,7 @@ def login():
 
 @bp.before_app_request
 def load_logged_in_user():
+    from app import get_db
     db = get_db()
     user_id = session.get('user_id')
 

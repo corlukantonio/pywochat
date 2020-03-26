@@ -1,3 +1,5 @@
+import auth
+import chat
 import datetime
 import os
 
@@ -7,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jsglue import JSGlue
 
 
-app = Flask(__name__)
+app = Flask(__name__, instance_relative_config=True)
 socketio = SocketIO(app)
 JSGlue(app)
 
@@ -40,7 +42,8 @@ class User(db.Model):
     firstname = db.Column(db.VARCHAR(30), nullable=False)
     lastname = db.Column(db.VARCHAR(30), nullable=False)
 
-    child = db.relationship("Message", uselist=False, back_populates="parent")
+    child = db.relationship("Message", uselist=False,
+                            back_populates="parent")
 
     def __init__(self, username, password, firstname, lastname):
         self.username = username
@@ -94,80 +97,72 @@ def get_db():
     return db
 
 
-# Import modules and register blueprints
-def register_blueprints():
-    import auth
-    app.register_blueprint(auth.bp)
+@socketio.on('add_new_contact')
+def add_new_contact(*json):
+    db = get_db()
 
-    import chat
-    app.register_blueprint(chat.bp)
-    app.add_url_rule('/', endpoint='index')
+    db.session.execute(
+        "INSERT INTO contacts (user_1, user_2) VALUES (:user_1, :user_2)",
+        {
+            'user_1': json[1][2],
+            'user_2': json[0]
+        }
+    )
+    db.session.commit()
+
+    db.session.execute(
+        "INSERT INTO contacts (user_1, user_2) VALUES (:user_1, :user_2)",
+        {
+            'user_1': json[0],
+            'user_2': json[1][2]
+        }
+    )
+    db.session.commit()
 
 
-# Init SocketIO actions
-def init_socketio_actions():
-    @socketio.on('add_new_contact')
-    def add_new_contact(*json):
-        db = get_db()
+@socketio.on('choose_contact')
+def choose_contact(*json):
+    pass
 
-        db.session.execute(
-            "INSERT INTO contacts (user_1, user_2) VALUES (:user_1, :user_2)",
-            {
-                'user_1': json[1][2],
-                'user_2': json[0]
-            }
-        )
-        db.session.commit()
 
-        db.session.execute(
-            "INSERT INTO contacts (user_1, user_2) VALUES (:user_1, :user_2)",
-            {
-                'user_1': json[0],
-                'user_2': json[1][2]
-            }
-        )
-        db.session.commit()
+@socketio.on('message')
+def handle_message(msg, currentUser, targetUser):
+    db = get_db()
 
-    @socketio.on('choose_contact')
-    def choose_contact(*json):
-        pass
+    targetUserId = db.session.execute(
+        "SELECT * FROM users WHERE username = :username",
+        {'username': targetUser[2]}
+    ).fetchone()
 
-    @socketio.on('message')
-    def handle_message(msg, currentUser, targetUser):
-        db = get_db()
+    print('Target user: ' + msg)
 
-        targetUserId = db.session.execute(
-            "SELECT * FROM users WHERE username = :username",
-            {'username': targetUser[2]}
-        ).fetchone()
+    currentUserId = db.session.execute(
+        "SELECT * FROM users WHERE username = :username",
+        {'username': currentUser}
+    ).fetchone()
 
-        print('Target user: ' + msg)
+    print(str(targetUserId['id']) + ' ' + str(currentUserId['id']))
 
-        currentUserId = db.session.execute(
-            "SELECT * FROM users WHERE username = :username",
-            {'username': currentUser}
-        ).fetchone()
+    db.session.execute(
+        "INSERT INTO messages (author_id, sent_to_id, created, content) VALUES (:author_id, :sent_to_id, :created, :content)",
+        {
+            'author_id': currentUserId['id'],
+            'sent_to_id': targetUserId['id'],
+            'created': datetime.datetime.utcnow(),
+            'content': msg
+        }
+    )
+    db.session.commit()
 
-        print(str(targetUserId['id']) + ' ' + str(currentUserId['id']))
+    print('Message: ' + msg)
 
-        db.session.execute(
-            "INSERT INTO messages (author_id, sent_to_id, created, content) VALUES (:author_id, :sent_to_id, :created, :content)",
-            {
-                'author_id': currentUserId['id'],
-                'sent_to_id': targetUserId['id'],
-                'created': datetime.datetime.utcnow(),
-                'content': msg
-            }
-        )
-        db.session.commit()
+    send([msg, currentUser, targetUser], broadcast=True)
 
-        print('Message: ' + msg)
 
-        send([msg, currentUser, targetUser], broadcast=True)
+app.register_blueprint(auth.bp)
+app.register_blueprint(chat.bp)
+app.add_url_rule('/', endpoint='index')
 
 
 if __name__ == '__main__':
-    register_blueprints()
-    init_socketio_actions()
-
     socketio.run(app)
