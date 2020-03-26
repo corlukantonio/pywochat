@@ -26,8 +26,6 @@ def index():
         'SELECT * FROM users WHERE id = ?', (user_id,)
     ).fetchone()
 
-    print("SEE THIS!!!")
-
     if user_id is None or currentUser is None:
         currentUser = None
     else:
