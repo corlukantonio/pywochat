@@ -1,0 +1,68 @@
+{% extends 'base.html' %} {% block header %} {% block title %}Izradite račun{%
+endblock %} {% endblock %} {% block content %}
+<!-- Register form -->
+<form method="post" id="req">
+  <div class="req_section">
+    <input
+      type="text"
+      class="_input_txt"
+      id="firstname"
+      name="firstname"
+      value=""
+      tabindex="4"
+      maxlength="30"
+      autocomplete="off"
+      required
+    />
+    <label class="_ttl" for="firstname">Ime</label>
+  </div>
+  <div class="req_section">
+    <input
+      type="text"
+      class="_input_txt"
+      id="lastname"
+      name="lastname"
+      value=""
+      tabindex="5"
+      maxlength="30"
+      autocomplete="off"
+      required
+    />
+    <label class="_ttl" for="lastname">Prezime</label>
+  </div>
+  <div class="req_section">
+    <input
+      type="text"
+      class="_input_txt"
+      id="username"
+      name="username"
+      value=""
+      tabindex="6"
+      maxlength="30"
+      autocomplete="off"
+      required
+    />
+    <label class="_ttl" for="username">Korisničko ime</label>
+  </div>
+  <div class="req_section">
+    <input
+      type="password"
+      class="_input_txt"
+      id="password"
+      name="password"
+      value=""
+      tabindex="7"
+      maxlength="30"
+      autocomplete="off"
+      required
+    />
+    <label class="_ttl" for="password">Lozinka</label>
+  </div>
+  <div class="req_section">
+    <input type="submit" class="btn req" value="Izradite račun" tabindex="8" />
+  </div>
+  {% for message in get_flashed_messages() %}
+  <div class="flash">{{ message }}</div>
+  {% endfor %}
+</form>
+{% endblock %}

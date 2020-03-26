@@ -5,7 +5,7 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from db import get_db
+from app import get_db
 
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -16,6 +16,7 @@ def register():
     if request.method == 'POST':
         db = get_db()
         error = None
+
         username = request.form['username']
         password = request.form['password']
         firstname = request.form['firstname']
@@ -30,14 +31,14 @@ def register():
         elif not lastname:
             error = 'Last name is required.'
         elif db.session.execute(
-            'SELECT id FROM users WHERE username = :username',
+            "SELECT id FROM users WHERE username = :username",
             {'username': username}
         ).fetchone() is not None:
             error = 'User {} is already registered.'.format(username)
 
         if error is None:
             db.session.execute(
-                'INSERT INTO users (username, password, firstname, lastname) VALUES (:username, :password, :firstname, :lastname)',
+                "INSERT INTO users (username, password, firstname, lastname) VALUES (:username, :password, :firstname, :lastname)",
                 {
                     'username': username,
                     'password': generate_password_hash(password),
@@ -63,7 +64,7 @@ def login():
         password = request.form['password']
 
         user = db.session.execute(
-            'SELECT * FROM users WHERE username = :username',
+            "SELECT * FROM users WHERE username = :username",
             {'username': username}
         ).fetchone()
 
@@ -92,7 +93,7 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = db.session.execute(
-            'SELECT * FROM users WHERE id = :id',
+            "SELECT * FROM users WHERE id = :id",
             {'id': user_id}
         ).fetchone()
 
