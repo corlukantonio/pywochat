@@ -115,8 +115,12 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
 ></script>
 <script type="text/javascript">
   $(document).ready(function() {
+    let protocol = window.location.protocol;
+
     // Connect to server
-    var socket = io.connect("http://" + document.domain + ":" + location.port);
+    let socket = io.connect(
+      protocol + "//" + document.domain + ":" + location.port
+    );
 
     // When contact added, change the button text
     function addButtonModification(src) {
