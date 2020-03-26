@@ -1,0 +1,466 @@
+{% extends 'base.html' %} {% block header %} {% block title %}Naslovnica{%
+endblock %} {% endblock %} {% block content %} {% if g.user %}
+<!-- Search engine -->
+<div id="searchEngine">
+  <div id="searchInput">
+    <div class="req_section">
+      <input
+        type="text"
+        class="_input_txt"
+        id="searchInputValue"
+        name="username"
+        value=""
+        tabindex="4"
+        maxlength="30"
+        autocomplete="off"
+        required
+      />
+      <label class="_ttl" for="username">Pretražite</label>
+    </div>
+  </div>
+  <div id="searchResultsTop5">
+    {% for searched_contact in all_contacts %}
+    <div class="search_results">
+      <span class="found_user"
+        >{{ searched_contact['firstname'] + ' ' + searched_contact['lastname'] +
+        ' (' + searched_contact['username'] + ')' }}</span
+      >
+      <div class="add_user_section">
+        <a class="btn add add_new_contact">Dodaj</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<!-- Chat -->
+<div id="chatFrame">
+  <div class="container">
+    <div id="chatInner">
+      <div id="chatContacts">
+        {% for my_contact in my_contacts %}
+        <div class="inbox_user">
+          <span class="inbox_user_info"
+            >{{ my_contact['firstname'] + ' ' + my_contact['lastname'] + ' (' +
+            my_contact['user_2'] + ')' }}</span
+          >
+          <span class="inbox_last_msg"></span>
+        </div>
+        {% endfor %}
+      </div>
+      <div id="chatMsgs">
+        <div id="targetUser">
+          <span></span>
+        </div>
+        <div id="msgsView">
+          {% for my_message in my_messages %} {% if g.user['username'] ==
+          my_message['username'] %}
+          <!-- Message sent by logged user (right alignment) -->
+          <div class="sent_msgs sender">
+            <span class="msg_info"
+              >{{ my_message['username'] + ' ' + my_message['username_receiver']
+              }}</span
+            >
+            <div class="msg_wrapper">
+              <span class="msg_content">{{ my_message['content'] }}</span>
+            </div>
+            <span class="sent_time">{{ my_message['created'] }}</span>
+          </div>
+          {% else %}
+          <!-- Message received by logged user (left alignment) -->
+          <div class="sent_msgs receiver">
+            <span class="msg_info"
+              >{{ my_message['username'] + ' ' + my_message['username_receiver']
+              }}</span
+            >
+            <div class="msg_wrapper">
+              <span class="msg_content">{{ my_message['content'] }}</span>
+            </div>
+            <span class="sent_time">{{ my_message['created'] }}</span>
+          </div>
+          {% endif %} {% endfor %}
+          <!-- Compose message -->
+          <div id="composeMsg">
+            <div class="req_section write">
+              <input
+                type="text"
+                class="_input_txt"
+                id="inputMsg"
+                name="inputMsg"
+                placeholder="Unesite poruku"
+                value=""
+                tabindex="5"
+              />
+            </div>
+            <div class="req_section send">
+              <input
+                type="button"
+                class="btn"
+                id="sendMsg"
+                value="Pošaljite"
+                tabindex="6"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js"></script>
+<script
+  src="{{ url_for('static', filename='js/eventUtility.js') }}"
+  type="text/javascript"
+></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    // Connect to server
+    var socket = io.connect("http://" + document.domain + ":" + location.port);
+
+    // When contact added, change the button text
+    function addButtonModification(src) {
+      $(src).addClass("new_contact_added");
+      $(src).text("Dodano");
+      $(src).css("margin-right", 0 + "px");
+      $(src).css("margin-top", 2 + "px");
+    }
+
+    // Send message and clear message input
+    function sendMessage() {
+      if ($("#inputMsg").val() != "") {
+        console.log("Message sent.");
+
+        let targetUser = $("#targetUser span").text();
+        targetUser = targetUser.replace("(", "");
+        targetUser = targetUser.replace(")", "");
+
+        let targetUserArr = targetUser.split(" ");
+
+        if (targetUser != "") {
+          socket.send(
+            $("#inputMsg").val(),
+            $("#currentUser").text(),
+            targetUserArr
+          );
+          $("#inputMsg").val("");
+        }
+      }
+    }
+
+    // Get target user
+    function targetUsername() {
+      let targetUser = $(event.target).text();
+
+      if ($(event.target).hasClass("inbox_last_msg"))
+        targetUser = $($($(event.target).parent()).children()[0]).text();
+      else if ($(event.target).hasClass("inbox_user"))
+        targetUser = $($(event.target).children()[0]).text();
+
+      return targetUser;
+    }
+
+    // Event handler
+    function eventHandler(event) {
+      let eSrc = eventUtility.getTarget(event);
+      let eType = event.type;
+
+      switch (eType) {
+        case "click":
+          $(".search_results").each(function() {
+            let searchInputValue = $("#searchInputValue")
+              .val()
+              .toUpperCase();
+
+            // If mouse clicked outside of search engine, close it
+            if (
+              $("#searchEngine").has(eSrc).length == 0 &&
+              !$("#searchEngine").is(eSrc)
+            )
+              $(this).css("display", "none");
+            else {
+              if (searchInputValue == "") $(this).css("display", "block");
+              else if (
+                $(".found_user", this)
+                  .text()
+                  .toUpperCase()
+                  .indexOf(searchInputValue) > -1
+              )
+                $(this).css("display", "block");
+              else $(this).css("display", "none");
+            }
+          });
+
+          // Add new contact button change on click
+          if ($(eSrc).hasClass("add_new_contact")) {
+            addButtonModification(eSrc);
+
+            let targetUserData = $(
+              $(event.target)
+                .parent()
+                .parent()
+                .children()[0]
+            ).text();
+
+            targetUserData = targetUserData.replace("(", "");
+            targetUserData = targetUserData.replace(")", "");
+
+            let targetUserDataArr = targetUserData.split(" ");
+
+            socket.emit(
+              "add_new_contact",
+              $("#currentUser").text(),
+              targetUserDataArr
+            );
+          } else if (eSrc.id == "sendMsg") sendMessage();
+          else if (
+            $(eSrc).hasClass("inbox_user_info") ||
+            $(eSrc).hasClass("inbox_last_msg")
+          ) {
+            console.log("Contact chosen.");
+
+            let targetUser = targetUsername();
+
+            $("#targetUser span").text(targetUser);
+
+            targetUser = targetUser.replace("(", "");
+            targetUser = targetUser.replace(")", "");
+            targetUserArr = targetUser.split(" ");
+
+            let sentMsg = $(".sent_msgs");
+            let sentMsgsLength = sentMsg.length;
+            let msgInfo;
+            let firstMessage = true;
+
+            for (let i = 0; i < sentMsgsLength; i++) {
+              msgInfo = $($(".msg_info")[i])
+                .text()
+                .split(" ");
+              if (
+                (msgInfo[0] == $("#currentUser").text() &&
+                  msgInfo[1] == targetUserArr[2]) ||
+                (msgInfo[0] == targetUserArr[2] &&
+                  msgInfo[1] == $("#currentUser").text())
+              ) {
+                $(sentMsg[i]).css("display", "block");
+                if (firstMessage) {
+                  $(sentMsg[i]).addClass("first_message");
+                  firstMessage = false;
+                }
+              } else {
+                $(sentMsg[i]).css("display", "none");
+              }
+            }
+
+            $("#msgsView").scrollTop($("#msgsView")[0].scrollHeight);
+
+            socket.emit(
+              "choose_contact",
+              $("#currentUser").text(),
+              targetUserArr
+            );
+          }
+          break;
+        case "keyup":
+          if (eSrc.id == "searchInputValue") {
+            let searchInputValue = $(eSrc)
+              .val()
+              .toUpperCase();
+
+            // Show results in the search engine when some button on keyboard is pressed
+            $(".search_results").each(function() {
+              if (searchInputValue == "") $(this).css("display", "none");
+              else if (
+                $(".found_user", this)
+                  .text()
+                  .toUpperCase()
+                  .indexOf(searchInputValue) > -1
+              )
+                $(this).css("display", "block");
+              else $(this).css("display", "none");
+            });
+          }
+          break;
+        case "keypress":
+          if (eSrc.id == "inputMsg" && event.which == "13") sendMessage();
+
+          break;
+        default:
+          break;
+      }
+    }
+
+    eventUtility.addEvent(document, "click", eventHandler);
+    eventUtility.addEvent(document, "keyup", eventHandler);
+    eventUtility.addEvent(document, "keypress", eventHandler);
+
+    socket.on("connect", function() {
+      console.log("User has connected.");
+
+      let sentMsgsLength = $(".sent_msgs").length;
+      let msgContent = $(".msg_content");
+      let userSender;
+      let inboxUserLength = $(".inbox_user").length;
+      let inboxUserInfo = $(".inbox_user_info");
+      let inboxLastMsg = $(".inbox_last_msg");
+      let addNewContact = $(".add_new_contact");
+      let addNewContactLength = addNewContact.length;
+      let foundUser = $(".found_user");
+
+      // Loading the last sent message to inbox
+      for (let i = 0; i < sentMsgsLength; i++) {
+        userSender = $($(".msg_info")[i])
+          .text()
+          .split(" ");
+        for (let j = 0; j < inboxUserLength; j++) {
+          if (
+            $(inboxUserInfo[j])
+              .text()
+              .indexOf(userSender[0]) > -1 ||
+            $(inboxUserInfo[j])
+              .text()
+              .indexOf(userSender[1]) > -1
+          )
+            $(inboxLastMsg[j]).text($(msgContent[i]).text());
+        }
+      }
+
+      for (let i = 0; i < addNewContactLength; i++) {
+        // If the user in search results matches current user, remove add button
+        if (
+          $(foundUser[i])
+            .text()
+            .indexOf($("#currentUser").text()) > -1
+        )
+          $(addNewContact[i]).css("display", "none");
+
+        for (let j = 0; j < inboxUserLength; j++) {
+          // If the user in search results is already in the contacts, change the button
+          if (
+            $(inboxUserInfo[j])
+              .text()
+              .indexOf($(foundUser[i]).text()) > -1
+          )
+            addButtonModification(addNewContact[i]);
+        }
+      }
+    });
+
+    // args = [msg, currentUser, targetUser]
+    socket.on("message", function(args) {
+      let d = new Date();
+      let month = d.getMonth() + 1;
+      let year = d.getFullYear();
+      let targetUser = $("#targetUser span").text();
+
+      targetUser = targetUser.replace("(", "");
+      targetUser = targetUser.replace(")", "");
+
+      let targetUserArr = targetUser.split(" ");
+
+      let inboxUser = $(".inbox_user");
+      let inboxUserLength = inboxUser.length;
+      let userMatch = args[1] == $("#currentUser").text();
+      let msgInfo;
+      let firstMessage = true;
+      let newMsgSound = new Audio(
+        Flask.url_for("static", { filename: "stairs.mp3" })
+      );
+
+      $("#msgsView").append(
+        (userMatch
+          ? "<div style='display: block;' class='sent_msgs sender'>"
+          : "<div style='display: block;' class='sent_msgs receiver'>") +
+          "<span class='msg_info' style='display: none;'>" +
+          args[1] +
+          " " +
+          args[2][2] +
+          "</span>" +
+          "<div class='msg_wrapper'>" +
+          "<span>" +
+          args[0] +
+          "</span>" +
+          "</div>" +
+          "<span class='sent_time'>" +
+          year +
+          "-" +
+          month +
+          "-" +
+          d.getDate() +
+          " " +
+          d.getHours() +
+          ":" +
+          d.getMinutes() +
+          ":" +
+          d.getSeconds() +
+          "</span>" +
+          "</div>"
+      );
+
+      for (let i = 0; i < inboxUserLength; i++) {
+        if (
+          userMatch &&
+          $($(inboxUser[i]).children()[0])
+            .text()
+            .indexOf(args[2][2]) > -1
+        ) {
+          $($(inboxUser[i]).children()[1]).text(args[0]);
+        } else if (
+          !userMatch &&
+          $($(inboxUser[i]).children()[0])
+            .text()
+            .indexOf(args[1]) > -1 &&
+          $("#currentUser")
+            .text()
+            .indexOf(args[2][2]) > -1
+        ) {
+          $($(inboxUser[i]).children()[1]).text(args[0]);
+          newMsgSound.play();
+        }
+      }
+
+      let sentMsg = $(".sent_msgs");
+      let sentMsgsLength = sentMsg.length;
+
+      for (let i = 0; i < sentMsgsLength; i++) {
+        msgInfo = $($(".msg_info")[i])
+          .text()
+          .split(" ");
+        if (
+          (msgInfo[0] == $("#currentUser").text() &&
+            msgInfo[1] == targetUserArr[2]) ||
+          (msgInfo[0] == targetUserArr[2] &&
+            msgInfo[1] == $("#currentUser").text())
+        ) {
+          $(sentMsg[i]).css("display", "block");
+          if (firstMessage) {
+            $(sentMsg[i]).addClass("first_message");
+            firstMessage = false;
+          }
+        } else {
+          $(sentMsg[i]).css("display", "none");
+        }
+      }
+      $("#msgsView").scrollTop($("#msgsView")[0].scrollHeight);
+    });
+  });
+
+  // Making "chat" responsive on height change
+  function resizeChatFrame() {
+    let chatFrame = document.getElementById("chatFrame");
+    let chatInner = document.getElementById("chatInner");
+    let msgsView = document.getElementById("msgsView");
+    let composeMsg = document.getElementById("composeMsg");
+
+    chatInner.style.height = window.innerHeight - chatFrame.offsetTop + "px";
+    msgsView.style.height =
+      chatInner.offsetHeight -
+      composeMsg.offsetHeight -
+      targetUser.offsetHeight +
+      "px";
+  }
+
+  eventUtility.addEvent(window, "load", resizeChatFrame);
+  eventUtility.addEvent(window, "resize", resizeChatFrame);
+</script>
+{% endif %} {% endblock %}

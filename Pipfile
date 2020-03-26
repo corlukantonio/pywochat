@@ -11,6 +11,8 @@ flask-socketio = "*"
 flask-jsglue = "*"
 gunicorn = "*"
 flask-sqlalchemy = "*"
+psycopg2 = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.7"

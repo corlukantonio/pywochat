@@ -1,0 +1,40 @@
+{% extends 'base.html' %} {% block header %} {% block title %}Prijavite se{%
+endblock %} {% endblock %} {% block content %}
+<!-- Login form -->
+<form method="post" id="req">
+  <div class="req_section">
+    <input
+      type="text"
+      class="_input_txt"
+      id="username"
+      name="username"
+      value=""
+      tabindex="4"
+      maxlength="30"
+      autocomplete="off"
+      required
+    />
+    <label class="_ttl" for="username">Korisničko ime</label>
+  </div>
+  <div class="req_section">
+    <input
+      type="password"
+      class="_input_txt"
+      id="password"
+      name="password"
+      value=""
+      tabindex="5"
+      maxlength="30"
+      autocomplete="off"
+      required
+    />
+    <label class="_ttl" for="password">Lozinka</label>
+  </div>
+  <div class="req_section">
+    <input type="submit" class="btn req" value="Prijavite se" tabindex="6" />
+  </div>
+  {% for message in get_flashed_messages() %}
+  <div class="flash">{{ message }}</div>
+  {% endfor %}
+</form>
+{% endblock %}
