@@ -14,7 +14,7 @@ JSGlue(app)
 app.config.from_mapping(SECRET_KEY='dev')
 
 # If running on localhost set this to 'dev'
-ENV = 'dev'
+ENV = 'prod'
 
 # Connect to the database
 if ENV == 'dev':
@@ -22,7 +22,7 @@ if ENV == 'dev':
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123456@localhost/pywochat'
 else:
     app.debug = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = ''
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://uqfiyhjjwbpqnn:59c6692f6350c217ba2db33d02a770847b36b9c738284fe2ec78813dbe9ea59a@ec2-34-206-252-187.compute-1.amazonaws.com:5432/d292bftsfo019d'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
