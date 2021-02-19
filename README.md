@@ -48,7 +48,7 @@ To create tables from the models defined in app.py, enter the following commands
 
 ### And finally, run it!
 
-Navigate to the pywochat, and start the web application by typing:
+Navigate to the pywochat, and start the web application by typing the following.
 
 ```
 $ python app.py
