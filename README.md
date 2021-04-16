@@ -8,6 +8,13 @@
 
 Before you start doing any of the following, make sure you have [PostgreSQL](https://www.postgresql.org/) and [Anaconda](https://www.anaconda.com/) installed on your computer.
 
+One important change to make within the [app.py](https://github.com/corlukantonio/pywochat/blob/master/app.py) document, if you are going to run it on localhost, is to change the ENV variable.
+
+```python
+# If running on localhost set this to 'dev'
+ENV = 'prod'
+```
+
 ### Setting the virtualenv
 
 If you have not already installed **virtualenv** and **pipenv**, do so by opening the Anaconda Prompt and entering the following.
@@ -40,7 +47,7 @@ $ python
 
 To create tables from the models defined in app.py, enter the following commands.
 
-```
+```python
 >>> from app import db
 >>> db.create_all()
 >>> exit()
