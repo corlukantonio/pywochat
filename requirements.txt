@@ -1,4 +1,4 @@
-anyio==3.7.1
+anyio==3.6.2
 bidict==0.22.1
 blinker==1.6.2
 certifi==2023.5.7
@@ -8,6 +8,7 @@ dnspython==2.4.0
 eventlet==0.33.3
 exceptiongroup==1.1.2
 Flask==2.3.2
+Flask-JSGlue @ file:///C:/Users/Antonio/Desktop/github/github-repositories/pywochat/packages/Flask-JSGlue
 Flask-SocketIO==5.3.4
 Flask-SQLAlchemy==3.0.5
 greenlet==2.0.2

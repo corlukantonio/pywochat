@@ -13,6 +13,7 @@ flask-sqlalchemy = "*"
 psycopg2 = "*"
 psycopg2-binary = "*"
 eventlet = "*"
+anyio = "==3.6.2"
 
 [requires]
 python_version = "3.11.4"
