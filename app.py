@@ -13,7 +13,7 @@ import chat
 from config import Config
 from extensions import db
 
-app: Flask = Flask(__name__, instance_relative_config=True)
+app: Flask = Flask(__name__, instance_relative_config=True, template_folder='templates')
 socketio: SocketIO = SocketIO()
 
 
