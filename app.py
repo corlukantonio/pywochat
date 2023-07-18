@@ -112,15 +112,6 @@ def create_app(config=Config) -> None:
     # app.add_url_rule('/', endpoint='index')
 
 
-example_blueprint = Blueprint('example_blueprint', __name__)
-
-
-@example_blueprint.route('/')
-def index():
-    return "BLUEPRINT WOOORKS"
-
-
-app.register_blueprint(example_blueprint)
 # @app.route("/")
 # def hello_world():
 #     return "<p>Hello world</p>"

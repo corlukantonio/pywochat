@@ -11,6 +11,11 @@ from extensions import db
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
+@bp.route('/')
+def hello():
+    return "BLUEEEEEPRIIIINT"
+
+
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
