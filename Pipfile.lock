@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "dd397ab8bc3d05c9b7405f765c50a285fd9accbedeb47bd7a43c2ca4f4aed794"
+            "sha256": "6f8ed4b1113c255dab528405495114801afc04b1f826839c31f8c744b5bf00b7"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -18,11 +18,11 @@
     "default": {
         "anyio": {
             "hashes": [
-                "sha256:25ea0d673ae30af41a0c442f81cf3b38c7e79fdc7b60335a4c14e05eb0947421",
-                "sha256:fbbe32bd270d2a2ef3ed1c5d45041250284e31fc0a4df4a5a6071842051a51e3"
+                "sha256:44a3c9aba0f5defa43261a8b3efb97891f2bd7d804e0e1f56419befa1adfc780",
+                "sha256:91dee416e570e92c64041bd18b900d1d6fa78dff7048769ce5ac5ddad004fbb5"
             ],
-            "index": "pypi",
-            "version": "==3.6.2"
+            "markers": "python_version >= '3.7'",
+            "version": "==3.7.1"
         },
         "bidict": {
             "hashes": [
@@ -80,6 +80,14 @@
             "index": "pypi",
             "version": "==0.33.3"
         },
+        "exceptiongroup": {
+            "hashes": [
+                "sha256:12c3e887d6485d16943a309616de20ae5582633e0a2eda17f4e10fd61c1e8af5",
+                "sha256:e346e69d186172ca7cf029c8c1d16235aa0e04035e5750b4b95039e65204328f"
+            ],
+            "markers": "python_version < '3.11'",
+            "version": "==1.1.2"
+        },
         "flask": {
             "hashes": [
                 "sha256:77fd4e1249d8c9923de34907236b747ced06e5467ecac1a7bb7115ae0e9670b0",
@@ -90,7 +98,7 @@
         },
         "flask-jsglue": {
             "git": "https://github.com/corlukantonio/Flask-JSGlue",
-            "ref": "a6da94a7e148c8f7e0fd87f4b858bafd7247eaf9"
+            "ref": "5a3b6f518176a2dbb60b6f2dc7e149327d8e03c1"
         },
         "flask-socketio": {
             "hashes": [
