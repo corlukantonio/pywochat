@@ -13,6 +13,7 @@ import chat
 from config import Config
 from extensions import db
 
+app: Flask = Flask(__name__, instance_relative_config=True)
 socketio: SocketIO = SocketIO()
 
 
@@ -100,7 +101,6 @@ def create_app(config=Config) -> Flask:
         Flask: App.
     '''
 
-    app: Flask = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config)
 
     socketio.init_app(app)
