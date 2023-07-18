@@ -117,4 +117,4 @@ def create_app(config=Config) -> Flask:
 if __name__ == '__main__':
     app: Flask = create_app()
 
-    socketio.run(app)
+    socketio.run(app, host='0.0.0.0', port=80)
