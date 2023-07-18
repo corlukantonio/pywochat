@@ -8,13 +8,13 @@ verify_ssl = true
 [packages]
 flask = "*"
 flask-socketio = "*"
-gunicorn = "==20.1.0"
 flask-sqlalchemy = "*"
 psycopg2 = "*"
 psycopg2-binary = "*"
 eventlet = "==0.33.3"
 flask-jsglue = {git = "https://github.com/corlukantonio/Flask-JSGlue"}
 gevent = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.11.4"
