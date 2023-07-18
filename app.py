@@ -2,7 +2,7 @@ import datetime
 import os
 from typing import Any
 
-from flask import Flask
+from flask import Blueprint, Flask
 from flask_jsglue import JSGlue
 from flask_socketio import SocketIO, send
 from flask_sqlalchemy import SQLAlchemy
@@ -112,9 +112,18 @@ def create_app(config=Config) -> None:
     # app.add_url_rule('/', endpoint='index')
 
 
-@app.route("/")
-def hello_world():
-    return "<p>Hello world</p>"
+example_blueprint = Blueprint('example_blueprint', __name__)
+
+
+@example_blueprint.route('/')
+def index():
+    return "BLUEPRINT WOOORKS"
+
+
+app.register_blueprint(example_blueprint)
+# @app.route("/")
+# def hello_world():
+#     return "<p>Hello world</p>"
 
 
 if __name__ == '__main__':
