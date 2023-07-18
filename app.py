@@ -90,27 +90,25 @@ def __get_target_user_id(target_user):
     return target_user_id
 
 
-def create_app(config=Config) -> None:
-    '''
-    Creates app.
+# def create_app(config=Config) -> None:
+#     '''
+#     Creates app.
 
-    Parameters:
-        config (Any): Config.
+#     Parameters:
+#         config (Any): Config.
 
-    Returns:
-        Flask: App.
-    '''
-
-    app.config.from_object(config)
-
-    socketio.init_app(app)
-    JSGlue(app)
-    db.init_app(app)
-
-    # app.register_blueprint(chat.bp)
-    # app.add_url_rule('/', endpoint='index')
+#     Returns:
+#         Flask: App.
+#     '''
 
 
+#     # app.register_blueprint(chat.bp)
+#     # app.add_url_rule('/', endpoint='index')
+app.config.from_object(Config)
+
+socketio.init_app(app)
+JSGlue(app)
+db.init_app(app)
 app.register_blueprint(auth.bp)
 
 # @app.route("/")
@@ -119,5 +117,5 @@ app.register_blueprint(auth.bp)
 
 
 if __name__ == '__main__':
-    create_app()
+    # create_app()
     socketio.run(app)
