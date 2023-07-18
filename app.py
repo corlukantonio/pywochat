@@ -107,10 +107,11 @@ def create_app(config=Config) -> None:
     JSGlue(app)
     db.init_app(app)
 
-    app.register_blueprint(auth.bp)
     # app.register_blueprint(chat.bp)
     # app.add_url_rule('/', endpoint='index')
 
+
+app.register_blueprint(auth.bp)
 
 # @app.route("/")
 # def hello_world():
