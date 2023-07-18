@@ -102,6 +102,7 @@ def create_app(config=Config) -> Flask:
     '''
 
     app.config.from_object(config)
+    print(config.SQLALCHEMY_DATABASE_URI)
 
     socketio.init_app(app)
     JSGlue(app)
