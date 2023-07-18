@@ -90,7 +90,7 @@ def __get_target_user_id(target_user):
     return target_user_id
 
 
-def create_app(config=Config) -> Flask:
+def create_app(config=Config) -> None:
     '''
     Creates app.
 
@@ -111,10 +111,7 @@ def create_app(config=Config) -> Flask:
     app.register_blueprint(chat.bp)
     app.add_url_rule('/', endpoint='index')
 
-    return app
-
 
 if __name__ == '__main__':
-    app: Flask = create_app()
-
-    socketio.run(app, host='0.0.0.0', port=80)
+    create_app()
+    socketio.run(app)
