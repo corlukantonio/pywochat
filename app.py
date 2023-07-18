@@ -104,12 +104,17 @@ def create_app(config=Config) -> None:
     app.config.from_object(config)
 
     socketio.init_app(app)
-    JSGlue(app)
-    db.init_app(app)
+    # JSGlue(app)
+    # db.init_app(app)
 
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(chat.bp)
-    app.add_url_rule('/', endpoint='index')
+    # app.register_blueprint(auth.bp)
+    # app.register_blueprint(chat.bp)
+    # app.add_url_rule('/', endpoint='index')
+
+
+@app.route("/")
+def hello_world():
+    return "<p>Hello world</p>"
 
 
 if __name__ == '__main__':
