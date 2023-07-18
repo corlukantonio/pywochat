@@ -14,7 +14,7 @@ psycopg2 = "*"
 psycopg2-binary = "*"
 eventlet = "*"
 anyio = "==3.6.2"
-flask-jsglue = {path = "./packages/Flask-JSGlue"}
+flask-jsglue = {git = "https://github.com/corlukantonio/Flask-JSGlue"}
 
 [requires]
 python_version = "3.11.4"

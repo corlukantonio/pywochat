@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6e351c0e11247d0b3ea092f10946233d606775d2fe6362656df92c84d34b3982"
+            "sha256": "dd397ab8bc3d05c9b7405f765c50a285fd9accbedeb47bd7a43c2ca4f4aed794"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -89,8 +89,8 @@
             "version": "==2.3.2"
         },
         "flask-jsglue": {
-            "path": "./packages/Flask-JSGlue",
-            "version": "==0.3.1"
+            "git": "https://github.com/corlukantonio/Flask-JSGlue",
+            "ref": "a6da94a7e148c8f7e0fd87f4b858bafd7247eaf9"
         },
         "flask-socketio": {
             "hashes": [
@@ -176,11 +176,11 @@
         },
         "gunicorn": {
             "hashes": [
-                "sha256:d01d18d61ba58fa1e3a1ae4f15c77989a95478edbaaf95f3e3ff92a2b69d1ff2",
-                "sha256:f3a52f282306059b3a39761559c086d326449a2d67eb8ab224f057caa7cd1cff"
+                "sha256:11fc98ea214a5845f614891e8c90b0211fbe595e677d204d7cd7d80f6f348891",
+                "sha256:37ced4b6622f263a6483eb7cbe9606df81afd57dc0fa464883600624790271c5"
             ],
             "index": "pypi",
-            "version": "==21.0.0"
+            "version": "==21.1.0"
         },
         "h11": {
             "hashes": [

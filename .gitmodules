@@ -1,3 +1,0 @@
-[submodule "packages/Flask-JSGlue"]
-	path = packages/Flask-JSGlue
-	url = https://github.com/corlukantonio/Flask-JSGlue
