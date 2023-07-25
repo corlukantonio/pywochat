@@ -12,7 +12,7 @@
   z-index: 1800;
 }
 
-#importUserPic > input[type="file"] {
+#importUserPic > input[type='file'] {
   position: relative;
   display: block;
   margin: 0 auto;
@@ -23,7 +23,7 @@
   cursor: pointer;
 }
 
-#importUserPic > input[type="submit"] {
+#importUserPic > input[type='submit'] {
   display: none;
 }
 

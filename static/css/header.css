@@ -55,7 +55,7 @@
   padding: 0;
 }
 
-.btn[name="nameBtn"] {
+.btn[name='nameBtn'] {
   padding: 8px 0;
   border: 2px solid #fff;
   background: none;
@@ -63,14 +63,14 @@
   box-shadow: none;
 }
 
-.btn[name="logBtn"] {
+.btn[name='logBtn'] {
   border: 2px solid #fff;
   background: #fff;
   color: #616161;
   transition: all 0.12s cubic-bezier(0.4, 0, 0.65, 0.18);
 }
 
-.btn[name="logBtn"]:active {
+.btn[name='logBtn']:active {
   border: 2px solid #bdbdbd;
   background: #bdbdbd;
   transition: all 0.12s cubic-bezier(0.35, 0.82, 0.4, 1);
