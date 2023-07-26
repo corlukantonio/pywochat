@@ -1,12 +1,10 @@
 import datetime
-import os
 from typing import Any
 
-from flask import Blueprint, Flask
+from flask import Flask
 from flask_jsglue import JSGlue
 from flask_socketio import SocketIO, send
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Result, Row, TextClause, text
+from sqlalchemy import Row, TextClause, text
 
 import auth
 import chat
@@ -18,9 +16,12 @@ socketio: SocketIO = SocketIO()
 
 
 @socketio.on('add_new_contact')
-def add_new_contact(*json) -> None:
+def add_new_contact(*json: Any) -> None:
     '''
     Adds new contact.
+
+    Parameters:
+        *json (Tuple[Any]): JSON.
     '''
 
     sql: TextClause = text("INSERT INTO contacts (user_1, user_2) VALUES (:user_1, :user_2)")
@@ -33,30 +34,35 @@ def add_new_contact(*json) -> None:
 
 
 @socketio.on('choose_contact')
-def choose_contact(*json) -> None:
+def choose_contact(*json: Any) -> None:
     '''
     Chooses contact.
+
+    Parameters:
+        *json (Tuple[Any]): JSON.
     '''
 
     pass
 
 
 @socketio.on('message')
-def handle_message(msg: Any, current_user: Any, target_user: Any) -> None:
+def handle_message(msg: Any, current_user: Any, target_user: dict[int, Any]) -> None:
     '''
     Handles message.
 
     Parameters:
         msg (Any): Message.
         current_user (Any): Current user.
-        target_user (Any): Target user.
+        target_user (dict[int, Any]): Target user.
     '''
 
-    target_user_id = __get_target_user_id(target_user[2])
+    target_user_id: Row[Any] | None = __get_target_user_id(target_user[2])
 
     print('Target user: ' + msg)
 
-    current_user_id = db.session.execute(
+    current_user_id: Row[Any] | None = __get_current_user_id(current_user)
+
+    current_user_id: Row[Any] | None = db.session.execute(
         text("SELECT * FROM users WHERE username = :username"),
         {'username': current_user}
     ).fetchone()
@@ -78,44 +84,47 @@ def handle_message(msg: Any, current_user: Any, target_user: Any) -> None:
     send([msg, current_user, target_user], broadcast=True)
 
 
-def __get_target_user_id(target_user):
+def __get_target_user_id(target_user: Any) -> Row[Any] | None:
     '''
     Get target user ID.
+
+    Parameters:
+        target_user (Any): Target user.
+
+    Returns:
+        Row[Any] | None: Target user ID.
     '''
 
-    query = text("SELECT * FROM users WHERE username = :username")
+    sql: TextClause = text('SELECT * FROM users WHERE username = :username')
 
-    target_user_id = db.session.execute(query, {'username': target_user}).fetchone()
-
-    return target_user_id
+    return db.session.execute(sql, {'username': target_user}).fetchone()
 
 
-# def create_app(config=Config) -> None:
-#     '''
-#     Creates app.
+def __get_current_user_id(current_user: Any) -> Row[Any] | None:
+    '''
+    Get current user ID.
 
-#     Parameters:
-#         config (Any): Config.
+    Parameters:
+        current_user (Any): Current user.
 
-#     Returns:
-#         Flask: App.
-#     '''
+    Returns:
+        Row[Any] | None: Current user ID.
+    '''
+
+    sql: TextClause = text('SELECT * FROM users WHERE username = :username')
+
+    return db.session.execute(sql, {'username': current_user}).fetchone()
 
 
-#     # app.register_blueprint(chat.bp)
-#     # app.add_url_rule('/', endpoint='index')
 app.config.from_object(Config)
+app.register_blueprint(auth.bp)
+app.register_blueprint(chat.bp)
+app.add_url_rule('/', endpoint='index')
 
 socketio.init_app(app)
 JSGlue(app)
 db.init_app(app)
-app.register_blueprint(auth.bp)
-
-# @app.route("/")
-# def hello_world():
-#     return "<p>Hello world</p>"
 
 
 if __name__ == '__main__':
-    # create_app()
     socketio.run(app)
