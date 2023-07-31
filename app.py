@@ -1,4 +1,5 @@
 import datetime
+import os
 from typing import Any
 
 from flask import Flask
@@ -11,8 +12,9 @@ import chat
 from config import Config
 from extensions import db
 
-app: Flask = Flask(__name__, instance_relative_config=True, template_folder='templates')
-socketio: SocketIO = SocketIO()
+app: Flask = Flask(__name__, instance_relative_config=True)
+JSGlue(app)
+socketio: SocketIO = SocketIO(app)
 
 
 @socketio.on('add_new_contact')
@@ -46,74 +48,74 @@ def choose_contact(*json: Any) -> None:
 
 
 @socketio.on('message')
-def handle_message(msg: Any, current_user: Any, target_user: dict[int, Any]) -> None:
+def handle_message(msg: str, current_user_username: str, target_user: dict[str, Any]) -> None:
     '''
     Handles message.
 
     Parameters:
-        msg (Any): Message.
-        current_user (Any): Current user.
-        target_user (dict[int, Any]): Target user.
+        msg (str): Message.
+        current_user_username (str): Current user username.
+        target_user (dict[str, Any]): Target user.
     '''
 
-    target_user_id: Row[Any] | None = __get_target_user_id(target_user[2])
+    print('jebo te isus')
+
+    current_user: Row[Any] = __get_user_by_username(current_user_username)
 
     print('Target user: ' + msg)
 
-    current_user_id: Row[Any] | None = __get_current_user_id(current_user)
+    if target_user is not None:
+        print(str(target_user['id']) + ' ' + str(current_user['id']))
 
-    current_user_id: Row[Any] | None = db.session.execute(
-        text("SELECT * FROM users WHERE username = :username"),
-        {'username': current_user}
-    ).fetchone()
-
-    if target_user_id is not None:
-        print(str(target_user_id['id']) + ' ' + str(current_user_id['id']))
-
-    db.session.execute(
-        text(
-            "INSERT INTO messages (author_id, sent_to_id, created, content) VALUES (:author_id, :sent_to_id, :created, :content)"),
-        {'author_id': current_user_id['id'],
-         'sent_to_id': target_user_id['id'],
-         'created': datetime.datetime.utcnow(),
-         'content': msg})
-    db.session.commit()
+    __insert_message(msg, current_user, target_user)
 
     print('Message: ' + msg)
 
     send([msg, current_user, target_user], broadcast=True)
 
 
-def __get_target_user_id(target_user: Any) -> Row[Any] | None:
+def __get_user_by_username(username: str) -> Row[Any]:
     '''
-    Get target user ID.
+    Gets user by username.
 
     Parameters:
-        target_user (Any): Target user.
+        user (str): Username.
 
     Returns:
-        Row[Any] | None: Target user ID.
+        Row[Any] | None: User.
     '''
 
     sql: TextClause = text('SELECT * FROM users WHERE username = :username')
+    params: dict[str, Any] = {'username': username}
 
-    return db.session.execute(sql, {'username': target_user}).fetchone()
+    return db.session.execute(sql, params).fetchone()
 
 
-def __get_current_user_id(current_user: Any) -> Row[Any] | None:
+def __insert_message(msg: str, current_user: Row[Any], target_user: dict[str, Any]) -> None:
     '''
-    Get current user ID.
+    Inserts message.
 
     Parameters:
-        current_user (Any): Current user.
-
-    Returns:
-        Row[Any] | None: Current user ID.
+        msg (str): Message.
+        current_user (Row[Any]): Current user.
+        target_user (dict[str, Any]): Target user.
     '''
 
-    sql: TextClause = text('SELECT * FROM users WHERE username = :username')
+    sql: TextClause = text(
+        """
+        INSERT INTO messages (author_id, sent_to_id, created, content)
+        VALUES (:author_id, :sent_to_id, :created, :content)
+        """)
 
-    return db.session.execute(sql, {'username': current_user}).fetchone()
+    params: dict[str, Any] = {
+        'author_id': current_user['id'],
+        'sent_to_id': target_user['id'],
+        'created': datetime.datetime.utcnow(),
+        'content': msg
+    }
+
+    db.session.execute(sql, params)
+    db.session.commit()
 
 
 app.config.from_object(Config)
@@ -121,8 +123,6 @@ app.register_blueprint(auth.bp)
 app.register_blueprint(chat.bp)
 app.add_url_rule('/', endpoint='index')
 
-socketio.init_app(app)
-JSGlue(app)
 db.init_app(app)
 
 

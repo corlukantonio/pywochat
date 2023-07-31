@@ -108,7 +108,12 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.js"
+  integrity="sha512-Z6C1p1NIexPj5MsVUunW4pg7uMX6/TT3CUVldmjXx2kpip1eZcrAnxIusDxyFIikyM9A61zOVNgvLr/TGudOQg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
 <script
   src="{{ url_for('static', filename='js/eventUtility.js') }}"
   type="text/javascript"
