@@ -13,6 +13,7 @@ psycopg2 = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
 flask-jsglue = {editable = true, git = "https://github.com/corlukantonio/Flask-JSGlue.git"}
+eventlet = "*"
 
 [requires]
 python_version = "3.11.4"
