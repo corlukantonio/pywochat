@@ -4,6 +4,7 @@ from typing import Any
 
 from flask import Flask
 from flask_jsglue import JSGlue
+from flask_migrate import Migrate
 from flask_socketio import SocketIO, send
 from sqlalchemy import Row, TextClause, text
 
@@ -124,6 +125,8 @@ app.register_blueprint(chat.bp)
 app.add_url_rule('/', endpoint='index')
 
 db.init_app(app)
+
+migrate = Migrate(app, db)
 
 
 if __name__ == '__main__':
