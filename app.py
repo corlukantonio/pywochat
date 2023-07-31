@@ -1,4 +1,5 @@
 import datetime
+import glob
 import os
 from typing import Any
 
@@ -16,6 +17,13 @@ from extensions import db
 app: Flask = Flask(__name__, instance_relative_config=True)
 JSGlue(app)
 socketio: SocketIO = SocketIO(app)
+
+model_files = glob.glob(os.path.join(os.path.dirname(__file__), 'models', '*.py'))
+for model_file in model_files:
+    if not model_file.endswith('__init__.py'):
+        import_name = os.path.basename(model_file)[:-3]
+        import_module = f'models.{import_name}'
+        __import__(import_module)
 
 
 @socketio.on('add_new_contact')
