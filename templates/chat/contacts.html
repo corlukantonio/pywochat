@@ -1,0 +1,11 @@
+<div id="chatContacts">
+  {% for my_contact in my_contacts %}
+  <div class="inbox_user">
+    <span class="inbox_user_info"
+      >{{ my_contact['firstname'] + ' ' + my_contact['lastname'] + ' (' +
+      my_contact['user_2'] + ')' }}</span
+    >
+    <span class="inbox_last_msg"></span>
+  </div>
+  {% endfor %}
+</div>

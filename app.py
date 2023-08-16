@@ -1,5 +1,6 @@
 import datetime
 import glob
+import json
 import os
 from typing import Any
 
@@ -12,18 +13,22 @@ from sqlalchemy import Row, TextClause, text
 import auth
 import chat
 from config import Config
-from extensions import db
+from extensions import db, socketio
 
-app: Flask = Flask(__name__, instance_relative_config=True)
-JSGlue(app)
-socketio: SocketIO = SocketIO(app)
+file_path = os.path.dirname(__file__)
+model_path = os.path.join(file_path, 'models', '*.py')
+model_files = glob.glob(model_path)
 
-model_files = glob.glob(os.path.join(os.path.dirname(__file__), 'models', '*.py'))
 for model_file in model_files:
     if not model_file.endswith('__init__.py'):
         import_name = os.path.basename(model_file)[:-3]
         import_module = f'models.{import_name}'
         __import__(import_module)
+
+
+app: Flask = Flask(__name__, instance_relative_config=True)
+JSGlue(app)
+socketio.init_app(app)
 
 
 @socketio.on('add_new_contact')
@@ -32,10 +37,10 @@ def add_new_contact(*json: Any) -> None:
     Adds new contact.
 
     Parameters:
-        *json (Tuple[Any]): JSON.
+        *json (tuple[Any]): JSON.
     '''
 
-    sql: TextClause = text("INSERT INTO contacts (user_1, user_2) VALUES (:user_1, :user_2)")
+    sql: TextClause = text('INSERT INTO contacts (user_1, user_2) VALUES (:user_1, :user_2)')
 
     db.session.execute(sql, {'user_1': json[1][2], 'user_2': json[0]})
     db.session.commit()
@@ -50,7 +55,7 @@ def choose_contact(*json: Any) -> None:
     Chooses contact.
 
     Parameters:
-        *json (Tuple[Any]): JSON.
+        *json (tuple[Any]): JSON.
     '''
 
     pass
@@ -67,20 +72,26 @@ def handle_message(msg: str, current_user_username: str, target_user: dict[str, 
         target_user (dict[str, Any]): Target user.
     '''
 
-    print('jebo te isus')
-
     current_user: Row[Any] = __get_user_by_username(current_user_username)
+    target_user: Row[Any] = __get_user_by_username(target_user[2])
 
     print('Target user: ' + msg)
 
     if target_user is not None:
-        print(str(target_user['id']) + ' ' + str(current_user['id']))
+        print(str(target_user[0]) + ' ' + str(current_user[0]))
 
     __insert_message(msg, current_user, target_user)
 
     print('Message: ' + msg)
 
-    send([msg, current_user, target_user], broadcast=True)
+    send([msg, json.dumps(current_user, cls=CustomEncoder), json.dumps(target_user, cls=CustomEncoder)], broadcast=True)
+
+
+class CustomEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Row):
+            return {'id': obj.id, 'username': obj.username}
+        return super().default(obj)
 
 
 def __get_user_by_username(username: str) -> Row[Any]:
@@ -115,16 +126,36 @@ def __insert_message(msg: str, current_user: Row[Any], target_user: dict[str, An
         INSERT INTO messages (author_id, sent_to_id, created, content)
         VALUES (:author_id, :sent_to_id, :created, :content)
         """)
-
     params: dict[str, Any] = {
-        'author_id': current_user['id'],
-        'sent_to_id': target_user['id'],
+        'author_id': current_user[0],
+        'sent_to_id': target_user[0],
         'created': datetime.datetime.utcnow(),
         'content': msg
     }
 
     db.session.execute(sql, params)
     db.session.commit()
+
+
+def create_app() -> Flask:
+    app: Flask = Flask(__name__, instance_relative_config=True)
+    JSGlue(app)
+    socketio: SocketIO = SocketIO(app)
+
+    model_files = glob.glob(os.path.join(os.path.dirname(__file__), 'models', '*.py'))
+    for model_file in model_files:
+        if not model_file.endswith('__init__.py'):
+            import_name = os.path.basename(model_file)[:-3]
+            import_module = f'models.{import_name}'
+            __import__(import_module)
+
+    app.config.from_object(Config)
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(chat.bp)
+    app.add_url_rule('/', endpoint='index')
+    db.init_app(app)
+
+    return app
 
 
 app.config.from_object(Config)

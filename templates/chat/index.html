@@ -1,108 +1,14 @@
 {% extends 'base.html' %} {% block header %} {% block title %}Naslovnica{%
 endblock %} {% endblock %} {% block content %} {% if g.user %}
 <!-- Search engine -->
-<div id="searchEngine">
-  <div id="searchInput">
-    <div class="req_section">
-      <input
-        type="text"
-        class="_input_txt"
-        id="searchInputValue"
-        name="username"
-        value=""
-        tabindex="4"
-        maxlength="30"
-        autocomplete="off"
-        required
-      />
-      <label class="_ttl" for="username">Pretražite</label>
-    </div>
-  </div>
-  <div id="searchResultsTop5">
-    {% for searched_contact in all_contacts %}
-    <div class="search_results">
-      <span class="found_user"
-        >{{ searched_contact['firstname'] + ' ' + searched_contact['lastname'] +
-        ' (' + searched_contact['username'] + ')' }}</span
-      >
-      <div class="add_user_section">
-        <a class="btn add add_new_contact">Dodaj</a>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-</div>
+
+{% include 'chat/search-bar.html' %}
+
 <!-- Chat -->
 <div id="chatFrame">
   <div class="container">
     <div id="chatInner">
-      <div id="chatContacts">
-        {% for my_contact in my_contacts %}
-        <div class="inbox_user">
-          <span class="inbox_user_info"
-            >{{ my_contact['firstname'] + ' ' + my_contact['lastname'] + ' (' +
-            my_contact['user_2'] + ')' }}</span
-          >
-          <span class="inbox_last_msg"></span>
-        </div>
-        {% endfor %}
-      </div>
-      <div id="chatMsgs">
-        <div id="targetUser">
-          <span></span>
-        </div>
-        <div id="msgsView">
-          {% for my_message in my_messages %} {% if g.user['username'] ==
-          my_message['username'] %}
-          <!-- Message sent by logged user (right alignment) -->
-          <div class="sent_msgs sender">
-            <span class="msg_info"
-              >{{ my_message['username'] + ' ' + my_message['username_receiver']
-              }}</span
-            >
-            <div class="msg_wrapper">
-              <span class="msg_content">{{ my_message['content'] }}</span>
-            </div>
-            <span class="sent_time">{{ my_message['created'] }}</span>
-          </div>
-          {% else %}
-          <!-- Message received by logged user (left alignment) -->
-          <div class="sent_msgs receiver">
-            <span class="msg_info"
-              >{{ my_message['username'] + ' ' + my_message['username_receiver']
-              }}</span
-            >
-            <div class="msg_wrapper">
-              <span class="msg_content">{{ my_message['content'] }}</span>
-            </div>
-            <span class="sent_time">{{ my_message['created'] }}</span>
-          </div>
-          {% endif %} {% endfor %}
-          <!-- Compose message -->
-          <div id="composeMsg">
-            <div class="req_section write">
-              <input
-                type="text"
-                class="_input_txt"
-                id="inputMsg"
-                name="inputMsg"
-                placeholder="Unesite poruku"
-                value=""
-                tabindex="5"
-              />
-            </div>
-            <div class="req_section send">
-              <input
-                type="button"
-                class="btn"
-                id="sendMsg"
-                value="Pošaljite"
-                tabindex="6"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+      {% include 'chat/contacts.html' %} {% include 'chat/messages.html' %}
     </div>
   </div>
 </div>
@@ -334,9 +240,6 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
 
     // args = [msg, currentUser, targetUser]
     socket.on('message', function (args) {
-      let d = new Date();
-      let month = d.getMonth() + 1;
-      let year = d.getFullYear();
       let targetUser = $('#targetUser span').text();
 
       targetUser = targetUser.replace('(', '');
@@ -346,7 +249,7 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
 
       let inboxUser = $('.inbox_user');
       let inboxUserLength = inboxUser.length;
-      let userMatch = args[1] == $('#currentUser').text();
+      let userMatch = args[1]['username'] == $('#currentUser').text();
       let msgInfo;
       let firstMessage = true;
       let newMsgSound = new Audio(
@@ -368,17 +271,7 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
           '</span>' +
           '</div>' +
           "<span class='sent_time'>" +
-          year +
-          '-' +
-          month +
-          '-' +
-          d.getDate() +
-          ' ' +
-          d.getHours() +
-          ':' +
-          d.getMinutes() +
-          ':' +
-          d.getSeconds() +
+          getDateAsString() +
           '</span>' +
           '</div>'
       );
@@ -421,6 +314,30 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
       }
       $('#msgsView').scrollTop($('#msgsView')[0].scrollHeight);
     });
+
+    function getDateAsString() {
+      let date = new Date();
+      let year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      let day = date.getDate();
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      let seconds = date.getSeconds();
+
+      return (
+        year +
+        '-' +
+        month +
+        '-' +
+        day +
+        ' ' +
+        hours +
+        ':' +
+        minutes +
+        ':' +
+        seconds
+      );
+    }
   });
 
   // Making "chat" responsive on height change

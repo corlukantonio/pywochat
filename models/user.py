@@ -38,7 +38,7 @@ class User(db.Model):
     Lastname.
     '''
 
-    child = db.relationship("Message", uselist=False, back_populates="parent")
+    child = db.relationship('Message', uselist=False, back_populates='parent')
     '''
     Child.
     '''
