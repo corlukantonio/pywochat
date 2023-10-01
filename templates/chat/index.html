@@ -1,8 +1,6 @@
 {% extends 'base.html' %} {% block header %} {% block title %}Naslovnica{%
-endblock %} {% endblock %} {% block content %} {% if g.user %}
-<!-- Search engine -->
-
-{% include 'chat/search-bar.html' %}
+endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
+'chat/search-bar/search-bar.html' %}
 
 <!-- Chat -->
 <div id="chatFrame">
@@ -13,17 +11,6 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
   </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script
-  src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.js"
-  integrity="sha512-Z6C1p1NIexPj5MsVUunW4pg7uMX6/TT3CUVldmjXx2kpip1eZcrAnxIusDxyFIikyM9A61zOVNgvLr/TGudOQg=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-></script>
-<script
-  src="{{ url_for('static', filename='js/eventUtility.js') }}"
-  type="text/javascript"
-></script>
 <script type="text/javascript">
   $(document).ready(function () {
     let protocol = window.location.protocol;
@@ -32,173 +19,6 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
     let socket = io.connect(
       protocol + '//' + document.domain + ':' + location.port
     );
-
-    // When contact added, change the button text
-    function addButtonModification(src) {
-      $(src).addClass('new_contact_added');
-      $(src).text('Dodano');
-      $(src).css('margin-right', 0 + 'px');
-      $(src).css('margin-top', 2 + 'px');
-    }
-
-    // Send message and clear message input
-    function sendMessage() {
-      if ($('#inputMsg').val() != '') {
-        console.log('Message sent.');
-
-        let targetUser = $('#targetUser span').text();
-        targetUser = targetUser.replace('(', '');
-        targetUser = targetUser.replace(')', '');
-
-        let targetUserArr = targetUser.split(' ');
-
-        if (targetUser != '') {
-          socket.send(
-            $('#inputMsg').val(),
-            $('#currentUser').text(),
-            targetUserArr
-          );
-          $('#inputMsg').val('');
-        }
-      }
-    }
-
-    // Get target user
-    function targetUsername() {
-      let targetUser = $(event.target).text();
-
-      if ($(event.target).hasClass('inbox_last_msg'))
-        targetUser = $($($(event.target).parent()).children()[0]).text();
-      else if ($(event.target).hasClass('inbox_user'))
-        targetUser = $($(event.target).children()[0]).text();
-
-      return targetUser;
-    }
-
-    // Event handler
-    function eventHandler(event) {
-      let eSrc = eventUtility.getTarget(event);
-      let eType = event.type;
-
-      switch (eType) {
-        case 'click':
-          $('.search_results').each(function () {
-            let searchInputValue = $('#searchInputValue').val().toUpperCase();
-
-            // If mouse clicked outside of search engine, close it
-            if (
-              $('#searchEngine').has(eSrc).length == 0 &&
-              !$('#searchEngine').is(eSrc)
-            )
-              $(this).css('display', 'none');
-            else {
-              if (searchInputValue == '') $(this).css('display', 'block');
-              else if (
-                $('.found_user', this)
-                  .text()
-                  .toUpperCase()
-                  .indexOf(searchInputValue) > -1
-              )
-                $(this).css('display', 'block');
-              else $(this).css('display', 'none');
-            }
-          });
-
-          // Add new contact button change on click
-          if ($(eSrc).hasClass('add_new_contact')) {
-            addButtonModification(eSrc);
-
-            let targetUserData = $(
-              $(event.target).parent().parent().children()[0]
-            ).text();
-
-            targetUserData = targetUserData.replace('(', '');
-            targetUserData = targetUserData.replace(')', '');
-
-            let targetUserDataArr = targetUserData.split(' ');
-
-            socket.emit(
-              'add_new_contact',
-              $('#currentUser').text(),
-              targetUserDataArr
-            );
-          } else if (eSrc.id == 'sendMsg') sendMessage();
-          else if (
-            $(eSrc).hasClass('inbox_user_info') ||
-            $(eSrc).hasClass('inbox_last_msg')
-          ) {
-            console.log('Contact chosen.');
-
-            let targetUser = targetUsername();
-
-            $('#targetUser span').text(targetUser);
-
-            targetUser = targetUser.replace('(', '');
-            targetUser = targetUser.replace(')', '');
-            targetUserArr = targetUser.split(' ');
-
-            let sentMsg = $('.sent_msgs');
-            let sentMsgsLength = sentMsg.length;
-            let msgInfo;
-            let firstMessage = true;
-
-            for (let i = 0; i < sentMsgsLength; i++) {
-              msgInfo = $($('.msg_info')[i]).text().split(' ');
-              if (
-                (msgInfo[0] == $('#currentUser').text() &&
-                  msgInfo[1] == targetUserArr[2]) ||
-                (msgInfo[0] == targetUserArr[2] &&
-                  msgInfo[1] == $('#currentUser').text())
-              ) {
-                $(sentMsg[i]).css('display', 'block');
-                if (firstMessage) {
-                  $(sentMsg[i]).addClass('first_message');
-                  firstMessage = false;
-                }
-              } else {
-                $(sentMsg[i]).css('display', 'none');
-              }
-            }
-
-            $('#msgsView').scrollTop($('#msgsView')[0].scrollHeight);
-
-            socket.emit(
-              'choose_contact',
-              $('#currentUser').text(),
-              targetUserArr
-            );
-          }
-          break;
-        case 'keyup':
-          if (eSrc.id == 'searchInputValue') {
-            let searchInputValue = $(eSrc).val().toUpperCase();
-
-            // Show results in the search engine when some button on keyboard is pressed
-            $('.search_results').each(function () {
-              if (searchInputValue == '') $(this).css('display', 'none');
-              else if (
-                $('.found_user', this)
-                  .text()
-                  .toUpperCase()
-                  .indexOf(searchInputValue) > -1
-              )
-                $(this).css('display', 'block');
-              else $(this).css('display', 'none');
-            });
-          }
-          break;
-        case 'keypress':
-          if (eSrc.id == 'inputMsg' && event.which == '13') sendMessage();
-
-          break;
-        default:
-          break;
-      }
-    }
-
-    eventUtility.addEvent(document, 'click', eventHandler);
-    eventUtility.addEvent(document, 'keyup', eventHandler);
-    eventUtility.addEvent(document, 'keypress', eventHandler);
 
     socket.on('connect', function () {
       console.log('User has connected.');
@@ -209,9 +29,9 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
       let inboxUserLength = $('.inbox_user').length;
       let inboxUserInfo = $('.inbox_user_info');
       let inboxLastMsg = $('.inbox_last_msg');
-      let addNewContact = $('.add_new_contact');
-      let addNewContactLength = addNewContact.length;
-      let foundUser = $('.found_user');
+      let addContact = $('.add_contact');
+      let addContactLength = addContact.length;
+      let foundUser = $('.found_contact');
 
       // Loading the last sent message to inbox
       for (let i = 0; i < sentMsgsLength; i++) {
@@ -225,20 +45,22 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
         }
       }
 
-      for (let i = 0; i < addNewContactLength; i++) {
+      for (let i = 0; i < addContactLength; i++) {
         // If the user in search results matches current user, remove add button
-        if ($(foundUser[i]).text().indexOf($('#currentUser').text()) > -1)
-          $(addNewContact[i]).css('display', 'none');
+        if (
+          $(foundUser[i]).text().indexOf($('#loggedInUserUsername').text()) > -1
+        )
+          $(addContact[i]).css('display', 'none');
 
         for (let j = 0; j < inboxUserLength; j++) {
           // If the user in search results is already in the contacts, change the button
           if ($(inboxUserInfo[j]).text().indexOf($(foundUser[i]).text()) > -1)
-            addButtonModification(addNewContact[i]);
+            Utils.setToAdded(addContact[i]);
         }
       }
     });
 
-    // args = [msg, currentUser, targetUser]
+    // args = [msg, loggedInUserUsername, targetUser]
     socket.on('message', function (args) {
       let targetUser = $('#targetUser span').text();
 
@@ -247,9 +69,13 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
 
       let targetUserArr = targetUser.split(' ');
 
+      console.log("helloooooo it's meeee");
+
       let inboxUser = $('.inbox_user');
       let inboxUserLength = inboxUser.length;
-      let userMatch = args[1]['username'] == $('#currentUser').text();
+      let userMatch =
+        JSON.parse(args[1])['username'] == $('#loggedInUserUsername').text();
+      console.log(args);
       let msgInfo;
       let firstMessage = true;
       let newMsgSound = new Audio(
@@ -271,7 +97,7 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
           '</span>' +
           '</div>' +
           "<span class='sent_time'>" +
-          getDateAsString() +
+          Utils.getDateAsString() +
           '</span>' +
           '</div>'
       );
@@ -285,7 +111,7 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
         } else if (
           !userMatch &&
           $($(inboxUser[i]).children()[0]).text().indexOf(args[1]) > -1 &&
-          $('#currentUser').text().indexOf(args[2][2]) > -1
+          $('#loggedInUserUsername').text().indexOf(args[2][2]) > -1
         ) {
           $($(inboxUser[i]).children()[1]).text(args[0]);
           newMsgSound.play();
@@ -297,11 +123,15 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
 
       for (let i = 0; i < sentMsgsLength; i++) {
         msgInfo = $($('.msg_info')[i]).text().split(' ');
+        console.log(msgInfo);
+        console.log($('#loggedInUserUsername').text());
+        console.log(targetUserArr);
         if (
-          (msgInfo[0] == $('#currentUser').text() &&
+          (JSON.parse(msgInfo[0])['username'] ==
+            $('#loggedInUserUsername').text() &&
             msgInfo[1] == targetUserArr[2]) ||
           (msgInfo[0] == targetUserArr[2] &&
-            msgInfo[1] == $('#currentUser').text())
+            msgInfo[1] == $('#loggedInUserUsername').text())
         ) {
           $(sentMsg[i]).css('display', 'block');
           if (firstMessage) {
@@ -309,53 +139,14 @@ endblock %} {% endblock %} {% block content %} {% if g.user %}
             firstMessage = false;
           }
         } else {
-          $(sentMsg[i]).css('display', 'none');
+          $(sentMsg[i]).css('display', 'block');
         }
       }
       $('#msgsView').scrollTop($('#msgsView')[0].scrollHeight);
     });
-
-    function getDateAsString() {
-      let date = new Date();
-      let year = date.getFullYear();
-      let month = date.getMonth() + 1;
-      let day = date.getDate();
-      let hours = date.getHours();
-      let minutes = date.getMinutes();
-      let seconds = date.getSeconds();
-
-      return (
-        year +
-        '-' +
-        month +
-        '-' +
-        day +
-        ' ' +
-        hours +
-        ':' +
-        minutes +
-        ':' +
-        seconds
-      );
-    }
   });
 
-  // Making "chat" responsive on height change
-  function resizeChatFrame() {
-    let chatFrame = document.getElementById('chatFrame');
-    let chatInner = document.getElementById('chatInner');
-    let msgsView = document.getElementById('msgsView');
-    let composeMsg = document.getElementById('composeMsg');
-
-    chatInner.style.height = window.innerHeight - chatFrame.offsetTop + 'px';
-    msgsView.style.height =
-      chatInner.offsetHeight -
-      composeMsg.offsetHeight -
-      targetUser.offsetHeight +
-      'px';
-  }
-
-  eventUtility.addEvent(window, 'load', resizeChatFrame);
-  eventUtility.addEvent(window, 'resize', resizeChatFrame);
+  eventUtility.addEvent(window, 'load', Utils.resizeChatFrame);
+  eventUtility.addEvent(window, 'resize', Utils.resizeChatFrame);
 </script>
 {% endif %} {% endblock %}

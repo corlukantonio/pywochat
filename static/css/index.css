@@ -1,11 +1,11 @@
-#searchEngine,
+#searchBar,
 #searchInput {
   display: block;
   position: relative;
   margin: 0 auto;
 }
 
-#searchResultsTop5 {
+#searchResults {
   position: relative;
   max-height: 240px;
   overflow-y: auto;
@@ -24,7 +24,7 @@
   z-index: 1020;
 }
 
-.found_user {
+.found_contact {
   display: inline-block;
   padding: 12px 0 12px 12px;
   color: #616161;
@@ -32,7 +32,7 @@
   font-size: 15px;
 }
 
-.add_user_section {
+.add_contact_section {
   display: block;
   position: relative;
   padding-right: 12px;
@@ -45,7 +45,7 @@
   margin-right: 2px;
 }
 
-.new_contact_added {
+.contact_added {
   background: transparent;
   color: #616161;
   border: none;
@@ -54,7 +54,7 @@
   transition: none;
 }
 
-.new_contact_added:active {
+.contact_added:active {
   border: none;
   background: transparent;
   transition: none;
@@ -84,25 +84,25 @@
   overflow-y: auto;
 }
 
-#searchResultsTop5::-webkit-scrollbar,
+#searchResults::-webkit-scrollbar,
 #chatContacts::-webkit-scrollbar,
 #msgsView::-webkit-scrollbar {
   width: 8px;
 }
 
-#searchResultsTop5::-webkit-scrollbar-track,
+#searchResults::-webkit-scrollbar-track,
 #chatContacts::-webkit-scrollbar-track,
 #msgsView::-webkit-scrollbar-track {
   background: #f0f0f0;
 }
 
-#searchResultsTop5::-webkit-scrollbar-thumb,
+#searchResults::-webkit-scrollbar-thumb,
 #chatContacts::-webkit-scrollbar-thumb,
 #msgsView::-webkit-scrollbar-thumb {
   background: #bdbdbd;
 }
 
-#searchResultsTop5::-webkit-scrollbar-thumb:hover,
+#searchResults::-webkit-scrollbar-thumb:hover,
 #chatContacts::-webkit-scrollbar-thumb:hover,
 #msgsView::-webkit-scrollbar-thumb:hover {
   background: #616161;

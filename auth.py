@@ -9,6 +9,7 @@ from werkzeug import Response
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from extensions import db
+from models.user import User
 
 
 class Auth:
@@ -70,7 +71,7 @@ class Auth:
         elif not password:
             return 'Password is required.'
         elif self.__get_user_id_by_username(username) is not None:
-            return 'User {} is already registered.'.format(username)
+            return f'User {username} is already registered.'
 
         return None
 
@@ -85,7 +86,7 @@ class Auth:
             Row[Any] | None: User ID.
         '''
 
-        sql: TextClause = text('SELECT id FROM users WHERE username = :username')
+        sql: TextClause = text(f'SELECT id FROM {User.__tablename__} WHERE username = :username')
         params: dict[str, Any] = {'username': username}
 
         return db.session.execute(sql, params).fetchone()
@@ -102,10 +103,10 @@ class Auth:
         '''
 
         sql: TextClause = text(
-            """
-            INSERT INTO users (username, password, firstname, lastname)
+            f'''
+            INSERT INTO {User.__tablename__} (username, password, firstname, lastname)
             VALUES (:username, :password, :firstname, :lastname)
-            """)
+            ''')
         params: dict[str, Any] = {
             'username': username,
             'password': generate_password_hash(password),
@@ -134,7 +135,9 @@ class Auth:
 
             if error is None:
                 session.clear()
-                session['user_id'] = user[0]
+
+                if user is not None:
+                    session['user_id'] = user[0]
 
                 return redirect(url_for('index'))
 
@@ -172,7 +175,7 @@ class Auth:
             Row[Any] | None: User ID.
         '''
 
-        sql: TextClause = text('SELECT * FROM users WHERE username = :username')
+        sql: TextClause = text(f'SELECT * FROM {User.__tablename__} WHERE username = :username')
         params: dict[str, Any] = {'username': username}
 
         return db.session.execute(sql, params).fetchone()
@@ -199,7 +202,7 @@ class Auth:
         if user_id is None:
             g.user = None
         else:
-            sql: TextClause = text('SELECT * FROM users WHERE id = :id')
+            sql: TextClause = text(f'SELECT * FROM {User.__tablename__} WHERE id = :id')
             params: dict[str, Any] = {'id': user_id}
             g.user = db.session.execute(sql, params).fetchone()
 

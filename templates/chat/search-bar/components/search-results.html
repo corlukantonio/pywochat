@@ -1,0 +1,70 @@
+<div id="searchResults">
+  {% for contact in search_results_contacts %}
+  <div class="search_results">
+    <span class="found_contact">
+      {{ contact['firstname'] + ' ' + contact['lastname'] + ' (' +
+      contact['username'] + ')' }}
+    </span>
+    <div class="add_contact_section">
+      <a class="btn add add_contact">Add</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script type="text/javascript">
+  class SearchResultsHandler {
+    constructor(searchInputHandler, socket, loggedInUserUsername) {
+      this.searchInputHandler = searchInputHandler;
+      this.socket = socket;
+      this.loggedInUserUsername = loggedInUserUsername;
+    }
+
+    isAddContact = async (eSrc) => $(eSrc).hasClass('add_contact');
+
+    handleSearchResultsVisibility = async (isClickedOutside = false) => {
+      let searchedValue = await this.searchInputHandler.getSearchedValue();
+
+      $('.search_results').each(async (index, elem) => {
+        let searchedValueIndex = await this.getSearchedValueIndex(
+          elem,
+          searchedValue
+        );
+        let isEmptyOrNotFound = !searchedValue || searchedValueIndex > -1;
+
+        if (isClickedOutside) await this.hideElem(elem);
+        else if (isEmptyOrNotFound) await this.showElem(elem);
+        else await this.hideElem(elem);
+      });
+    };
+
+    getSearchedValueIndex = async (elem, searchedValue) =>
+      $('.found_contact', elem).text().toUpperCase().indexOf(searchedValue);
+
+    showElem = async (elem) => $(elem).css('display', 'block');
+
+    hideElem = async (elem) => $(elem).css('display', 'none');
+
+    addContact = async (eSrc) => {
+      Utils.setToAdded(eSrc);
+
+      let foundContact = await this.getFoundContact();
+      let payload = {
+        loggedInUserUsername: this.loggedInUserUsername,
+        foundContact,
+      };
+
+      this.socket.emit('add_contact', payload);
+    };
+
+    getFoundContact = async () =>
+      $($(event.target).parent().parent().children()[0])
+        .text()
+        .replace('\n', '')
+        .replace('(', '')
+        .replace(')', '')
+        .split(' ')
+        .map((elem) => elem.replace('\n', ''))
+        .filter((elem) => elem);
+  }
+</script>

@@ -1,0 +1,22 @@
+<div id="searchInput">
+  <div class="req_section">
+    <input
+      type="text"
+      class="_input_txt"
+      id="searchedValue"
+      name="searchedValue"
+      value=""
+      tabindex="4"
+      maxlength="30"
+      autocomplete="off"
+      required
+    />
+    <label class="_ttl" for="searchedValue">Search</label>
+  </div>
+</div>
+
+<script type="text/javascript">
+  class SearchInputHandler {
+    getSearchedValue = async () => $('#searchedValue').val().toUpperCase();
+  }
+</script>

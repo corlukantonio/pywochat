@@ -14,6 +14,8 @@ import auth
 import chat
 from config import Config
 from extensions import db, socketio
+from models.contact import Contact
+from models.message import Message
 
 file_path = os.path.dirname(__file__)
 model_path = os.path.join(file_path, 'models', '*.py')
@@ -31,21 +33,28 @@ JSGlue(app)
 socketio.init_app(app)
 
 
-@socketio.on('add_new_contact')
-def add_new_contact(*json: Any) -> None:
+@socketio.on('add_contact')
+def add_contact(json: dict[str, Any]) -> None:
     '''
-    Adds new contact.
+    Adds contact.
 
     Parameters:
-        *json (tuple[Any]): JSON.
+        json (dict[str, Any]): JSON.
     '''
 
-    sql: TextClause = text('INSERT INTO contacts (user_1, user_2) VALUES (:user_1, :user_2)')
+    sql: TextClause = text(
+        f'''
+        INSERT INTO {Contact.__tablename__} (user_1, user_2)
+        VALUES (:user_1, :user_2)
+        ''')
 
-    db.session.execute(sql, {'user_1': json[1][2], 'user_2': json[0]})
+    logged_in_user_username = json['loggedInUserUsername']
+    found_contact_username = json['foundContact'][2]
+
+    db.session.execute(sql, {'user_1': found_contact_username, 'user_2': logged_in_user_username})
     db.session.commit()
 
-    db.session.execute(sql, {'user_1': json[0], 'user_2': json[1][2]})
+    db.session.execute(sql, {'user_1': logged_in_user_username, 'user_2': found_contact_username})
     db.session.commit()
 
 
@@ -122,10 +131,10 @@ def __insert_message(msg: str, current_user: Row[Any], target_user: dict[str, An
     '''
 
     sql: TextClause = text(
-        """
-        INSERT INTO messages (author_id, sent_to_id, created, content)
+        f'''
+        INSERT INTO {Message.__tablename__} (author_id, sent_to_id, created, content)
         VALUES (:author_id, :sent_to_id, :created, :content)
-        """)
+        ''')
     params: dict[str, Any] = {
         'author_id': current_user[0],
         'sent_to_id': target_user[0],
@@ -165,7 +174,7 @@ app.add_url_rule('/', endpoint='index')
 
 db.init_app(app)
 
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, directory="migrations")
 
 
 if __name__ == '__main__':
