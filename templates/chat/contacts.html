@@ -11,69 +11,51 @@
 </div>
 
 <script type="text/javascript">
-  $(document).ready(() => {
-    let protocol = window.location.protocol;
-    let socket = io.connect(
-      protocol + '//' + document.domain + ':' + location.port
-    );
-
-    // Event handler
-    function eventHandler(event) {
-      let eSrc = eventUtility.getTarget(event);
-      let eType = event.type;
-
-      switch (eType) {
-        case 'click':
-          if (
-            $(eSrc).hasClass('inbox_user_info') ||
-            $(eSrc).hasClass('inbox_last_msg')
-          ) {
-            let targetUser = Utils.getTargetUsername();
-
-            $('#targetUser span').text(targetUser);
-
-            targetUser = targetUser.replace('(', '');
-            targetUser = targetUser.replace(')', '');
-            targetUserArr = targetUser.split(' ');
-
-            let sentMsg = $('.sent_msgs');
-            let sentMsgsLength = sentMsg.length;
-            let msgInfo;
-            let firstMessage = true;
-
-            for (let i = 0; i < sentMsgsLength; i++) {
-              msgInfo = $($('.msg_info')[i]).text().split(' ');
-              if (
-                (msgInfo[0] == $('#loggedInUserUsername').text() &&
-                  msgInfo[1] == targetUserArr[2]) ||
-                (msgInfo[0] == targetUserArr[2] &&
-                  msgInfo[1] == $('#loggedInUserUsername').text())
-              ) {
-                $(sentMsg[i]).css('display', 'block');
-                if (firstMessage) {
-                  $(sentMsg[i]).addClass('first_message');
-                  firstMessage = false;
-                }
-              } else {
-                $(sentMsg[i]).css('display', 'none');
-              }
-            }
-
-            $('#msgsView').scrollTop($('#msgsView')[0].scrollHeight);
-
-            socket.emit(
-              'choose_contact',
-              $('#loggedInUserUsername').text(),
-              targetUserArr
-            );
-          }
-          break;
-
-        default:
-          break;
-      }
+  class ContactsHandler {
+    constructor(messagesHandler, socket, loggedInUserUsername) {
+      this.messagesHandler = messagesHandler;
+      this.socket = socket;
+      this.loggedInUserUsername = loggedInUserUsername;
     }
 
-    eventUtility.addEvent(document, 'click', eventHandler);
-  });
+    loadMessages = async () => {
+      let targetUser = Utils.getTargetUsername();
+
+      this.messagesHandler.setTargetUser(targetUser);
+
+      targetUser = targetUser.replace('(', '').replace(')', '').split(' ');
+
+      let sentMessages = await this.messagesHandler.getSentMessages();
+      let sentMessagesCount = await this.messagesHandler.getSentMessagesCount();
+      let firstMessage = true;
+
+      for (let i = 0; i < sentMessagesCount; i++) {
+        let messageInfo = (await this.messagesHandler.getMessageInfo(i))
+          .text()
+          .split(' ');
+
+        if (
+          (messageInfo[0] == this.loggedInUserUsername &&
+            messageInfo[1] == targetUser[2]) ||
+          (messageInfo[0] == targetUser[2] &&
+            messageInfo[1] == this.loggedInUserUsername)
+        ) {
+          this.showMessage(sentMessages[i]);
+
+          if (firstMessage) {
+            $(sentMessages[i]).addClass('first_message');
+            firstMessage = false;
+          }
+        } else this.hideMessage(sentMessages[i]);
+      }
+
+      this.messagesHandler.scrollToLatest();
+
+      this.socket.emit('choose_contact', this.loggedInUserUsername, targetUser);
+    };
+
+    showMessage = async (sentMessage) => $(sentMessage).css('display', 'block');
+
+    hideMessage = async (sentMessage) => $(sentMessage).css('display', 'none');
+  }
 </script>

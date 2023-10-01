@@ -1,0 +1,54 @@
+<div id="chatMsgs">
+  <div id="targetUser">
+    <span></span>
+  </div>
+  <div id="msgsView">
+    {% for message in messages %} {% if g.user['username'] ==
+    message['username'] %} {% include
+    'chat/messages/components/sender-message.html' %} {% else %} {% include
+    'chat/messages/components/receiver-message.html' %} {% endif %} {% endfor %}
+    {% include 'chat/messages/components/compose-message.html' %}
+  </div>
+</div>
+
+<script type="text/javascript">
+  class MessagesHandler {
+    constructor(composeMessageHandler, socket, loggedInUserUsername) {
+      this.composeMessageHandler = composeMessageHandler;
+      this.socket = socket;
+      this.loggedInUserUsername = loggedInUserUsername;
+    }
+
+    sendMessage = async () => {
+      let input = await this.composeMessageHandler.getInputMessageValue();
+
+      if (input) {
+        let targetUser = await this.getTargetUser();
+
+        if (targetUser.length > 1) {
+          this.socket.send(input, this.loggedInUserUsername, targetUser);
+          this.composeMessageHandler.emptyInputMessageValue();
+        }
+      }
+    };
+
+    getTargetUser = async () =>
+      $('#targetUser span').text().replace('(', '').replace(')', '').split(' ');
+
+    getSentMessages = async () => $('.sent_msgs');
+
+    getSentMessagesCount = async () => (await this.getSentMessages()).length;
+
+    getMessagesContent = async () => $('.msg_content');
+
+    getMessagesInfo = async () => $('.msg_info');
+
+    getMessageInfo = async (index) => $((await this.getMessagesInfo())[index]);
+
+    setTargetUser = async (targetUser) =>
+      $('#targetUser span').text(targetUser);
+
+    scrollToLatest = async () =>
+      $('#msgsView').scrollTop($('#msgsView')[0].scrollHeight);
+  }
+</script>

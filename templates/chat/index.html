@@ -6,26 +6,81 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
 <div id="chatFrame">
   <div class="container">
     <div id="chatInner">
-      {% include 'chat/contacts.html' %} {% include 'chat/messages.html' %}
+      {% include 'chat/contacts.html' %} {% include
+      'chat/messages/messages.html' %}
     </div>
   </div>
 </div>
 
 <script type="text/javascript">
-  $(document).ready(function () {
+  $(document).ready(async () => {
     let protocol = window.location.protocol;
-
-    // Connect to server
     let socket = io.connect(
       protocol + '//' + document.domain + ':' + location.port
     );
+    let headerOnlineHandler = new HeaderOnlineHandler();
+    let loggedInUserUsername =
+      await headerOnlineHandler.getLoggedInUserUsername();
+    let searchInputHandler = new SearchInputHandler();
+    let searchResultsHandler = new SearchResultsHandler(
+      searchInputHandler,
+      socket,
+      loggedInUserUsername
+    );
+    let searchBarHandler = new SearchBarHandler();
+    let composeMessageHandler = new ComposeMessageHandler();
+    let messagesHandler = new MessagesHandler(
+      composeMessageHandler,
+      socket,
+      loggedInUserUsername
+    );
+    let contactsHandler = new ContactsHandler(
+      messagesHandler,
+      socket,
+      loggedInUserUsername
+    );
 
-    socket.on('connect', function () {
-      console.log('User has connected.');
+    handleEvent = async (event) => {
+      let eSrc = eventUtility.getTarget(event);
+      let eType = event.type;
 
-      let sentMsgsLength = $('.sent_msgs').length;
-      let msgContent = $('.msg_content');
-      let userSender;
+      switch (eType) {
+        case 'click':
+          let isClickedOutside = await searchBarHandler.isClickedOutside(eSrc);
+          let isAddContact = await searchResultsHandler.isAddContact(eSrc);
+
+          if (
+            $(eSrc).hasClass('inbox_user_info') ||
+            $(eSrc).hasClass('inbox_last_msg')
+          ) {
+            contactsHandler.loadMessages();
+          }
+          if (eSrc.id == 'sendMsg') messagesHandler.sendMessage();
+          if (isAddContact) searchResultsHandler.addContact(eSrc);
+          searchResultsHandler.handleSearchResultsVisibility(isClickedOutside);
+
+          break;
+
+        case 'keyup':
+          if (eSrc.id == 'inputMsg' && event.which == '13')
+            messagesHandler.sendMessage();
+
+          if (eSrc.id == 'searchedValue')
+            searchResultsHandler.handleSearchResultsVisibility();
+
+          break;
+
+        default:
+          break;
+      }
+    };
+
+    eventUtility.addEvent(document, 'click', handleEvent);
+    eventUtility.addEvent(document, 'keyup', handleEvent);
+
+    socket.on('connect', async () => {
+      let sentMessagesCount = await messagesHandler.getSentMessagesCount();
+      let messagesContent = await messagesHandler.getMessagesContent();
       let inboxUserLength = $('.inbox_user').length;
       let inboxUserInfo = $('.inbox_user_info');
       let inboxLastMsg = $('.inbox_last_msg');
@@ -34,22 +89,23 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
       let foundUser = $('.found_contact');
 
       // Loading the last sent message to inbox
-      for (let i = 0; i < sentMsgsLength; i++) {
-        userSender = $($('.msg_info')[i]).text().split(' ');
+      for (let i = 0; i < sentMessagesCount; i++) {
+        let messageInfo = (await messagesHandler.getMessageInfo(i))
+          .text()
+          .split(' ');
+
         for (let j = 0; j < inboxUserLength; j++) {
           if (
-            $(inboxUserInfo[j]).text().indexOf(userSender[0]) > -1 ||
-            $(inboxUserInfo[j]).text().indexOf(userSender[1]) > -1
+            $(inboxUserInfo[j]).text().indexOf(messageInfo[0]) > -1 ||
+            $(inboxUserInfo[j]).text().indexOf(messageInfo[1]) > -1
           )
-            $(inboxLastMsg[j]).text($(msgContent[i]).text());
+            $(inboxLastMsg[j]).text($(messagesContent[i]).text());
         }
       }
 
       for (let i = 0; i < addContactLength; i++) {
         // If the user in search results matches current user, remove add button
-        if (
-          $(foundUser[i]).text().indexOf($('#loggedInUserUsername').text()) > -1
-        )
+        if ($(foundUser[i]).text().indexOf(loggedInUserUsername) > -1)
           $(addContact[i]).css('display', 'none');
 
         for (let j = 0; j < inboxUserLength; j++) {
@@ -61,7 +117,7 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
     });
 
     // args = [msg, loggedInUserUsername, targetUser]
-    socket.on('message', function (args) {
+    socket.on('message', async (args) => {
       let targetUser = $('#targetUser span').text();
 
       targetUser = targetUser.replace('(', '');
@@ -69,12 +125,9 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
 
       let targetUserArr = targetUser.split(' ');
 
-      console.log("helloooooo it's meeee");
-
       let inboxUser = $('.inbox_user');
       let inboxUserLength = inboxUser.length;
-      let userMatch =
-        JSON.parse(args[1])['username'] == $('#loggedInUserUsername').text();
+      let userMatch = JSON.parse(args[1])['username'] == loggedInUserUsername;
       console.log(args);
       let msgInfo;
       let firstMessage = true;
@@ -118,10 +171,10 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
         }
       }
 
-      let sentMsg = $('.sent_msgs');
-      let sentMsgsLength = sentMsg.length;
+      let sentMessages = await messagesHandler.getSentMessages();
+      let sentMessagesCount = await messagesHandler.getSentMessagesCount();
 
-      for (let i = 0; i < sentMsgsLength; i++) {
+      for (let i = 0; i < sentMessagesCount; i++) {
         msgInfo = $($('.msg_info')[i]).text().split(' ');
         console.log(msgInfo);
         console.log($('#loggedInUserUsername').text());
@@ -133,16 +186,17 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
           (msgInfo[0] == targetUserArr[2] &&
             msgInfo[1] == $('#loggedInUserUsername').text())
         ) {
-          $(sentMsg[i]).css('display', 'block');
+          $(sentMessages[i]).css('display', 'block');
           if (firstMessage) {
-            $(sentMsg[i]).addClass('first_message');
+            $(sentMessages[i]).addClass('first_message');
             firstMessage = false;
           }
         } else {
-          $(sentMsg[i]).css('display', 'block');
+          $(sentMessages[i]).css('display', 'block');
         }
       }
-      $('#msgsView').scrollTop($('#msgsView')[0].scrollHeight);
+
+      messagesHandler.scrollToLatest();
     });
   });
 

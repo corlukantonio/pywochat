@@ -1,0 +1,31 @@
+<div id="header" class="offline">
+  <div class="container">
+    <div id="hLogo" class="offline">
+      <a href="/" target="_self" draggable="false" tabindex="1">Pywo Chat</a>
+    </div>
+    <div id="hBtns">
+      <div class="btns_section offline">
+        <a
+          href="{{ url_for('auth.login') }}"
+          class="btn"
+          name="logBtn"
+          target="_self"
+          draggable="false"
+          tabindex="2"
+          >Log In</a
+        >
+      </div>
+      <div class="btns_section offline">
+        <a
+          href="{{ url_for('auth.register') }}"
+          class="btn"
+          name="regBtn"
+          target="_self"
+          draggable="false"
+          tabindex="3"
+          >Register</a
+        >
+      </div>
+    </div>
+  </div>
+</div>

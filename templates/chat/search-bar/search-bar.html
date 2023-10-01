@@ -4,46 +4,8 @@
 </div>
 
 <script type="text/javascript">
-  $(document).ready(() => {
-    let protocol = window.location.protocol;
-    let socket = io.connect(
-      protocol + '//' + document.domain + ':' + location.port
-    );
-    let loggedInUserUsername = $('#loggedInUserUsername').text();
-    let searchInputHandler = new SearchInputHandler();
-    let searchResultsHandler = new SearchResultsHandler(
-      searchInputHandler,
-      socket,
-      loggedInUserUsername
-    );
-
-    async function handleEventForSearchBar(event) {
-      let eSrc = eventUtility.getTarget(event);
-      let eType = event.type;
-
-      switch (eType) {
-        case 'click':
-          let isClickedOutside =
-            $('#searchBar').has(eSrc).length === 0 && !$('#searchBar').is(eSrc);
-          let isAddContact = await searchResultsHandler.isAddContact(eSrc);
-
-          searchResultsHandler.handleSearchResultsVisibility(isClickedOutside);
-          if (isAddContact) searchResultsHandler.addContact(eSrc);
-
-          break;
-
-        case 'keyup':
-          if (eSrc.id == 'searchedValue')
-            searchResultsHandler.handleSearchResultsVisibility();
-
-          break;
-
-        default:
-          break;
-      }
-    }
-
-    eventUtility.addEvent(document, 'click', handleEventForSearchBar);
-    eventUtility.addEvent(document, 'keyup', handleEventForSearchBar);
-  });
+  class SearchBarHandler {
+    isClickedOutside = async (eSrc) =>
+      $('#searchBar').has(eSrc).length === 0 && !$('#searchBar').is(eSrc);
+  }
 </script>

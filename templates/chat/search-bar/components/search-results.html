@@ -1,10 +1,10 @@
 <div id="searchResults">
   {% for contact in search_results_contacts %}
   <div class="search_results">
-    <span class="found_contact">
-      {{ contact['firstname'] + ' ' + contact['lastname'] + ' (' +
-      contact['username'] + ')' }}
-    </span>
+    <span class="found_contact"
+      >{{ contact['firstname'] + ' ' + contact['lastname'] + ' (' +
+      contact['username'] + ')' }}</span
+    >
     <div class="add_contact_section">
       <a class="btn add add_contact">Add</a>
     </div>

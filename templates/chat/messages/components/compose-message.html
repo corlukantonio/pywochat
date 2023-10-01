@@ -1,0 +1,24 @@
+<div id="composeMsg">
+  <div class="req_section write">
+    <input
+      type="text"
+      class="_input_txt"
+      id="inputMsg"
+      name="inputMsg"
+      placeholder="Type"
+      value=""
+      tabindex="5"
+    />
+  </div>
+  <div class="req_section send">
+    <input type="button" class="btn" id="sendMsg" value="Send" tabindex="6" />
+  </div>
+</div>
+
+<script type="text/javascript">
+  class ComposeMessageHandler {
+    getInputMessageValue = async () => $('#inputMsg').val();
+
+    emptyInputMessageValue = async () => $('#inputMsg').val('');
+  }
+</script>

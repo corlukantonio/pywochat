@@ -10,7 +10,7 @@
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
 
-    <!-- Fonts -->
+    <!-- Fonts. -->
     <link
       href="https://fonts.googleapis.com/css?family=RobotoDraft:400,500,700"
       rel="stylesheet"
@@ -22,7 +22,7 @@
       type="text/css"
     />
 
-    <!-- Styles -->
+    <!-- Styles. -->
     <link
       href="{{ url_for('static', filename='css/base.css') }}"
       rel="stylesheet"
@@ -49,7 +49,7 @@
       type="text/css"
     />
 
-    <!-- Scripts -->
+    <!-- Scripts. -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.js"
@@ -70,85 +70,8 @@
   </head>
   <body>
     <div id="hPush"></div>
-    {% if g.user %}
-    <!-- Header - If user logged -->
-    <div id="header" class="online">
-      <div class="container">
-        <div id="hLogo" class="online">
-          <a
-            href="{{ url_for('chat.index') }}"
-            target="_self"
-            draggable="false"
-            tabindex="1"
-            >Pywo Chat</a
-          >
-        </div>
-        <div id="hBtns">
-          <div class="btns_section online">
-            <a
-              href="#"
-              class="btn"
-              name="nameBtn"
-              target="_self"
-              draggable="false"
-              tabindex="2"
-              >{{ g.user['firstname'] + ' ' + g.user['lastname'] }}
-              <span id="loggedInUserUsername" style="display: none"
-                >{{ g.user['username'] }}</span
-              ></a
-            >
-          </div>
-          <div class="btns_section online">
-            <a
-              href="{{ url_for('auth.logout') }}"
-              class="btn"
-              name="outBtn"
-              target="_self"
-              draggable="false"
-              tabindex="3"
-              >Odjavite se</a
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-    {% else %}
-    <!-- Header - If user not logged -->
-    <div id="header" class="offline">
-      <div class="container">
-        <div id="hLogo" class="offline">
-          <a href="/" target="_self" draggable="false" tabindex="1"
-            >Pywo Chat</a
-          >
-        </div>
-        <div id="hBtns">
-          <div class="btns_section offline">
-            <a
-              href="{{ url_for('auth.login') }}"
-              class="btn"
-              name="logBtn"
-              target="_self"
-              draggable="false"
-              tabindex="2"
-              >Prijavite se</a
-            >
-          </div>
-          <div class="btns_section offline">
-            <a
-              href="{{ url_for('auth.register') }}"
-              class="btn"
-              name="regBtn"
-              target="_self"
-              draggable="false"
-              tabindex="3"
-              >Izradite račun</a
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endif %}
-    <!-- Content -->
+    {% if g.user %} {% include 'header/online.html' %} {% else %} {% include
+    'header/offline.html' %} {% endif %}
     <div id="content">
       <div class="container">{% block content %}{% endblock %}</div>
     </div>

@@ -35,7 +35,7 @@ class Chat:
                 current_user[0])
 
             return render_template(
-                'chat/index.html', search_results_contacts=all_contacts, my_contacts=contacts, my_messages=messages)
+                'chat/index.html', search_results_contacts=all_contacts, my_contacts=contacts, messages=messages)
 
         else:
             return render_template('chat/index.html', search_results_contacts=all_contacts)
