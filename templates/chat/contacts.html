@@ -57,5 +57,13 @@
     showMessage = async (sentMessage) => $(sentMessage).css('display', 'block');
 
     hideMessage = async (sentMessage) => $(sentMessage).css('display', 'none');
+
+    getInboxUsers = async () => $('.inbox_user').toArray();
+
+    getInboxUserCount = async () => $('.inbox_user').length;
+
+    getInboxUserInfos = async () => $('.inbox_user_info');
+
+    getInboxLastMessages = async () => $('.inbox_last_msg');
   }
 </script>

@@ -48,13 +48,11 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
         case 'click':
           let isClickedOutside = await searchBarHandler.isClickedOutside(eSrc);
           let isAddContact = await searchResultsHandler.isAddContact(eSrc);
-
-          if (
+          let isInboxUser =
             $(eSrc).hasClass('inbox_user_info') ||
-            $(eSrc).hasClass('inbox_last_msg')
-          ) {
-            contactsHandler.loadMessages();
-          }
+            $(eSrc).hasClass('inbox_last_msg');
+
+          if (isInboxUser) contactsHandler.loadMessages();
           if (eSrc.id == 'sendMsg') messagesHandler.sendMessage();
           if (isAddContact) searchResultsHandler.addContact(eSrc);
           searchResultsHandler.handleSearchResultsVisibility(isClickedOutside);
@@ -79,42 +77,53 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
     eventUtility.addEvent(document, 'keyup', handleEvent);
 
     socket.on('connect', async () => {
-      let sentMessagesCount = await messagesHandler.getSentMessagesCount();
-      let messagesContent = await messagesHandler.getMessagesContent();
-      let inboxUserLength = $('.inbox_user').length;
-      let inboxUserInfo = $('.inbox_user_info');
-      let inboxLastMsg = $('.inbox_last_msg');
-      let addContact = $('.add_contact');
-      let addContactLength = addContact.length;
-      let foundUser = $('.found_contact');
+      await loadLatestMessage();
+      await loadAddContactButtons();
+    });
 
-      // Loading the last sent message to inbox
-      for (let i = 0; i < sentMessagesCount; i++) {
+    loadLatestMessage = async () => {
+      let sentMessages = await messagesHandler.getSentMessages();
+      let messagesContent = await messagesHandler.getMessagesContent();
+      let inboxUsers = await contactsHandler.getInboxUsers();
+      let inboxLastMessages = await contactsHandler.getInboxLastMessages();
+
+      sentMessages.forEach(async (elem, i) => {
         let messageInfo = (await messagesHandler.getMessageInfo(i))
           .text()
           .split(' ');
 
-        for (let j = 0; j < inboxUserLength; j++) {
-          if (
-            $(inboxUserInfo[j]).text().indexOf(messageInfo[0]) > -1 ||
-            $(inboxUserInfo[j]).text().indexOf(messageInfo[1]) > -1
-          )
-            $(inboxLastMsg[j]).text($(messagesContent[i]).text());
-        }
-      }
+        inboxUsers.forEach(async (elem, j) => {
+          let isInboxUserSenderOrReceiver =
+            $(elem).text().indexOf(messageInfo[0]) > -1 ||
+            $(elem).text().indexOf(messageInfo[1]) > -1;
+
+          if (isInboxUserSenderOrReceiver)
+            $(inboxLastMessages[j]).text($(messagesContent[i]).text());
+        });
+      });
+    };
+
+    loadAddContactButtons = async () => {
+      let addContact = await searchResultsHandler.getAddContacts();
+      let addContactLength = addContact.length;
+      let foundUser = await searchResultsHandler.getFoundContacts();
+      let inboxUserLength = await contactsHandler.getInboxUserCount();
+      let inboxUserInfo = await contactsHandler.getInboxUserInfos();
 
       for (let i = 0; i < addContactLength; i++) {
-        // If the user in search results matches current user, remove add button
-        if ($(foundUser[i]).text().indexOf(loggedInUserUsername) > -1)
-          $(addContact[i]).css('display', 'none');
+        let isLoggedInUser =
+          $(foundUser[i]).text().indexOf(loggedInUserUsername) > -1;
+
+        if (isLoggedInUser) $(addContact[i]).css('display', 'none');
 
         for (let j = 0; j < inboxUserLength; j++) {
-          // If the user in search results is already in the contacts, change the button
-          if ($(inboxUserInfo[j]).text().indexOf($(foundUser[i]).text()) > -1)
-            Utils.setToAdded(addContact[i]);
+          let isAddedContact =
+            $(inboxUserInfo[j]).text().indexOf($(foundUser[i]).text()) > -1;
+
+          if (isAddedContact) Utils.setToAdded(addContact[i]);
         }
       }
-    });
+    };
 
     // args = [msg, loggedInUserUsername, targetUser]
     socket.on('message', async (args) => {

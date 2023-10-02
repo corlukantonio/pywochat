@@ -35,7 +35,7 @@
     getTargetUser = async () =>
       $('#targetUser span').text().replace('(', '').replace(')', '').split(' ');
 
-    getSentMessages = async () => $('.sent_msgs');
+    getSentMessages = async () => $('.sent_msgs').toArray();
 
     getSentMessagesCount = async () => (await this.getSentMessages()).length;
 
