@@ -77,38 +77,15 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
     eventUtility.addEvent(document, 'keyup', handleEvent);
 
     socket.on('connect', async () => {
-      await loadLatestMessage();
+      await contactsHandler.loadLatestMessage();
       await loadAddContactButtons();
     });
-
-    loadLatestMessage = async () => {
-      let sentMessages = await messagesHandler.getSentMessages();
-      let messagesContent = await messagesHandler.getMessagesContent();
-      let inboxUsers = await contactsHandler.getInboxUsers();
-      let inboxLastMessages = await contactsHandler.getInboxLastMessages();
-
-      sentMessages.forEach(async (elem, i) => {
-        let messageInfo = (await messagesHandler.getMessageInfo(i))
-          .text()
-          .split(' ');
-
-        inboxUsers.forEach(async (elem, j) => {
-          let isInboxUserSenderOrReceiver =
-            $(elem).text().indexOf(messageInfo[0]) > -1 ||
-            $(elem).text().indexOf(messageInfo[1]) > -1;
-
-          if (isInboxUserSenderOrReceiver)
-            $(inboxLastMessages[j]).text($(messagesContent[i]).text());
-        });
-      });
-    };
 
     loadAddContactButtons = async () => {
       let addContact = await searchResultsHandler.getAddContacts();
       let addContactLength = addContact.length;
       let foundUser = await searchResultsHandler.getFoundContacts();
-      let inboxUserLength = await contactsHandler.getInboxUserCount();
-      let inboxUserInfo = await contactsHandler.getInboxUserInfos();
+      let inboxUserInfos = await contactsHandler.getInboxUserInfos();
 
       for (let i = 0; i < addContactLength; i++) {
         let isLoggedInUser =
@@ -116,12 +93,12 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
 
         if (isLoggedInUser) $(addContact[i]).css('display', 'none');
 
-        for (let j = 0; j < inboxUserLength; j++) {
+        inboxUserInfos.forEach((elem, j) => {
           let isAddedContact =
-            $(inboxUserInfo[j]).text().indexOf($(foundUser[i]).text()) > -1;
+            $(elem).text().indexOf($(foundUser[i]).text()) > -1;
 
           if (isAddedContact) Utils.setToAdded(addContact[i]);
-        }
+        });
       }
     };
 

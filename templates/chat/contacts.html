@@ -58,11 +58,31 @@
 
     hideMessage = async (sentMessage) => $(sentMessage).css('display', 'none');
 
+    loadLatestMessage = async () => {
+      let sentMessages = await this.messagesHandler.getSentMessages();
+      let messagesContent = await this.messagesHandler.getMessagesContent();
+      let inboxUsers = await getInboxUsers();
+      let inboxLastMessages = await getInboxLastMessages();
+
+      sentMessages.forEach(async (elem, i) => {
+        let messageInfo = (await messagesHandler.getMessageInfo(i))
+          .text()
+          .split(' ');
+
+        inboxUsers.forEach(async (elem, j) => {
+          let isInboxUserSenderOrReceiver =
+            $(elem).text().indexOf(messageInfo[0]) > -1 ||
+            $(elem).text().indexOf(messageInfo[1]) > -1;
+
+          if (isInboxUserSenderOrReceiver)
+            $(inboxLastMessages[j]).text($(messagesContent[i]).text());
+        });
+      });
+    };
+
     getInboxUsers = async () => $('.inbox_user').toArray();
 
-    getInboxUserCount = async () => $('.inbox_user').length;
-
-    getInboxUserInfos = async () => $('.inbox_user_info');
+    getInboxUserInfos = async () => $('.inbox_user_info').toArray();
 
     getInboxLastMessages = async () => $('.inbox_last_msg');
   }
