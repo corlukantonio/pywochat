@@ -110,34 +110,12 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
 
       let targetUserArr = targetUser.split(' ');
 
-      let inboxUsers = await contactsHandler.getInboxUsers();
-      let userMatch = JSON.parse(args[1])['username'] == loggedInUserUsername;
-      console.log(args);
       let firstMessage = true;
-      let newMsgSound = new Audio(
-        Flask.url_for('static', { filename: 'stairs.mp3' })
-      );
 
       await messagesHandler.appendMessage(args);
-
-      inboxUsers.forEach((elem) => {
-        let inboxUserInfo = $($(elem).children[0]);
-        let inboxLastMessage = $($(elem).children[1]);
-
-        if (userMatch && $(inboxUserInfo).text().indexOf(args[2][2]) > -1)
-          inboxLastMessage.text(args[0]);
-        else if (
-          !userMatch &&
-          inboxUserInfo.text().indexOf(args[1]) > -1 &&
-          loggedInUserUsername.indexOf(args[2][2]) > -1
-        ) {
-          $($(elem).children()[1]).text(args[0]);
-          newMsgSound.play();
-        }
-      });
+      await contactsHandler.updateLastMessage(args);
 
       let sentMessages = await messagesHandler.getSentMessages();
-      let sentMessagesCount = await messagesHandler.getSentMessagesCount();
 
       sentMessages.forEach(async (elem, i) => {
         let messageInfo = (await messagesHandler.getMessageInfo(i))
