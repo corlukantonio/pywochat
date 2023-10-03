@@ -82,24 +82,23 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
     });
 
     loadAddContactButtons = async () => {
-      let addContact = await searchResultsHandler.getAddContacts();
-      let addContactLength = addContact.length;
+      let addContacts = await searchResultsHandler.getAddContacts();
       let foundUser = await searchResultsHandler.getFoundContacts();
       let inboxUserInfos = await contactsHandler.getInboxUserInfos();
 
-      for (let i = 0; i < addContactLength; i++) {
+      addContacts.forEach((elem, i) => {
         let isLoggedInUser =
           $(foundUser[i]).text().indexOf(loggedInUserUsername) > -1;
 
-        if (isLoggedInUser) $(addContact[i]).css('display', 'none');
+        if (isLoggedInUser) $(elem).css('display', 'none');
 
         inboxUserInfos.forEach((elem, j) => {
           let isAddedContact =
             $(elem).text().indexOf($(foundUser[i]).text()) > -1;
 
-          if (isAddedContact) Utils.setToAdded(addContact[i]);
+          if (isAddedContact) Utils.setToAdded(addContacts[i]);
         });
-      }
+      });
     };
 
     // args = [msg, loggedInUserUsername, targetUser]
@@ -111,76 +110,55 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
 
       let targetUserArr = targetUser.split(' ');
 
-      let inboxUser = $('.inbox_user');
-      let inboxUserLength = inboxUser.length;
+      let inboxUsers = await contactsHandler.getInboxUsers();
       let userMatch = JSON.parse(args[1])['username'] == loggedInUserUsername;
       console.log(args);
-      let msgInfo;
       let firstMessage = true;
       let newMsgSound = new Audio(
         Flask.url_for('static', { filename: 'stairs.mp3' })
       );
 
-      $('#msgsView').append(
-        (userMatch
-          ? "<div style='display: block;' class='sent_msgs sender'>"
-          : "<div style='display: block;' class='sent_msgs receiver'>") +
-          "<span class='msg_info' style='display: none;'>" +
-          args[1] +
-          ' ' +
-          args[2][2] +
-          '</span>' +
-          "<div class='msg_wrapper'>" +
-          '<span>' +
-          args[0] +
-          '</span>' +
-          '</div>' +
-          "<span class='sent_time'>" +
-          Utils.getDateAsString() +
-          '</span>' +
-          '</div>'
-      );
+      await messagesHandler.appendMessage(args);
 
-      for (let i = 0; i < inboxUserLength; i++) {
-        if (
-          userMatch &&
-          $($(inboxUser[i]).children()[0]).text().indexOf(args[2][2]) > -1
-        ) {
-          $($(inboxUser[i]).children()[1]).text(args[0]);
-        } else if (
+      inboxUsers.forEach((elem) => {
+        let inboxUserInfo = $($(elem).children[0]);
+        let inboxLastMessage = $($(elem).children[1]);
+
+        if (userMatch && $(inboxUserInfo).text().indexOf(args[2][2]) > -1)
+          inboxLastMessage.text(args[0]);
+        else if (
           !userMatch &&
-          $($(inboxUser[i]).children()[0]).text().indexOf(args[1]) > -1 &&
-          $('#loggedInUserUsername').text().indexOf(args[2][2]) > -1
+          inboxUserInfo.text().indexOf(args[1]) > -1 &&
+          loggedInUserUsername.indexOf(args[2][2]) > -1
         ) {
-          $($(inboxUser[i]).children()[1]).text(args[0]);
+          $($(elem).children()[1]).text(args[0]);
           newMsgSound.play();
         }
-      }
+      });
 
       let sentMessages = await messagesHandler.getSentMessages();
       let sentMessagesCount = await messagesHandler.getSentMessagesCount();
 
-      for (let i = 0; i < sentMessagesCount; i++) {
-        msgInfo = $($('.msg_info')[i]).text().split(' ');
-        console.log(msgInfo);
-        console.log($('#loggedInUserUsername').text());
-        console.log(targetUserArr);
+      sentMessages.forEach(async (elem, i) => {
+        let messageInfo = (await messagesHandler.getMessageInfo(i))
+          .text()
+          .split(' ');
+
         if (
-          (JSON.parse(msgInfo[0])['username'] ==
-            $('#loggedInUserUsername').text() &&
-            msgInfo[1] == targetUserArr[2]) ||
-          (msgInfo[0] == targetUserArr[2] &&
-            msgInfo[1] == $('#loggedInUserUsername').text())
+          (JSON.parse(messageInfo[0])['username'] == loggedInUserUsername &&
+            messageInfo[1] == targetUserArr[2]) ||
+          (messageInfo[0] == targetUserArr[2] &&
+            messageInfo[1] == loggedInUserUsername)
         ) {
-          $(sentMessages[i]).css('display', 'block');
+          $(elem).css('display', 'block');
           if (firstMessage) {
-            $(sentMessages[i]).addClass('first_message');
+            $(elem).addClass('first_message');
             firstMessage = false;
           }
         } else {
-          $(sentMessages[i]).css('display', 'block');
+          $(elem).css('display', 'block');
         }
-      }
+      });
 
       messagesHandler.scrollToLatest();
     });

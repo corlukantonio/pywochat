@@ -26,10 +26,9 @@
       targetUser = targetUser.replace('(', '').replace(')', '').split(' ');
 
       let sentMessages = await this.messagesHandler.getSentMessages();
-      let sentMessagesCount = await this.messagesHandler.getSentMessagesCount();
       let firstMessage = true;
 
-      for (let i = 0; i < sentMessagesCount; i++) {
+      sentMessages.forEach(async (elem, i) => {
         let messageInfo = (await this.messagesHandler.getMessageInfo(i))
           .text()
           .split(' ');
@@ -47,7 +46,7 @@
             firstMessage = false;
           }
         } else this.hideMessage(sentMessages[i]);
-      }
+      });
 
       this.messagesHandler.scrollToLatest();
 
@@ -61,11 +60,11 @@
     loadLatestMessage = async () => {
       let sentMessages = await this.messagesHandler.getSentMessages();
       let messagesContent = await this.messagesHandler.getMessagesContent();
-      let inboxUsers = await getInboxUsers();
-      let inboxLastMessages = await getInboxLastMessages();
+      let inboxUsers = await this.getInboxUsers();
+      let inboxLastMessages = await this.getInboxLastMessages();
 
       sentMessages.forEach(async (elem, i) => {
-        let messageInfo = (await messagesHandler.getMessageInfo(i))
+        let messageInfo = (await this.messagesHandler.getMessageInfo(i))
           .text()
           .split(' ');
 
@@ -84,6 +83,6 @@
 
     getInboxUserInfos = async () => $('.inbox_user_info').toArray();
 
-    getInboxLastMessages = async () => $('.inbox_last_msg');
+    getInboxLastMessages = async () => $('.inbox_last_msg').toArray();
   }
 </script>

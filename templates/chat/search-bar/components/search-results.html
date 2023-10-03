@@ -67,7 +67,7 @@
         .map((elem) => elem.replace('\n', ''))
         .filter((elem) => elem);
 
-    getAddContacts = async () => $('.add_contact');
+    getAddContacts = async () => $('.add_contact').toArray();
 
     getFoundContacts = async () => $('.found_contact');
   }
