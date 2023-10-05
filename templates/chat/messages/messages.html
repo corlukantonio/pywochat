@@ -60,6 +60,30 @@
       );
     };
 
+    displayMessages = async (targetUserArr) => {
+      let sentMessages = await this.getSentMessages();
+
+      sentMessages.forEach(async (elem, i) => {
+        let messageInfo = (await this.getMessageInfo(i)).text().split(' ');
+
+        if (
+          (JSON.parse(messageInfo[0])['username'] ==
+            this.loggedInUserUsername &&
+            messageInfo[1] == targetUserArr[2]) ||
+          (messageInfo[0] == targetUserArr[2] &&
+            messageInfo[1] == this.loggedInUserUsername)
+        ) {
+          $(elem).css('display', 'block');
+          if (firstMessage) {
+            $(elem).addClass('first_message');
+            firstMessage = false;
+          }
+        } else {
+          $(elem).css('display', 'block');
+        }
+      });
+    };
+
     getSentMessages = async () => $('.sent_msgs').toArray();
 
     getMessagesContent = async () => $('.msg_content');

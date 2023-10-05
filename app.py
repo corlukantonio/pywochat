@@ -70,6 +70,13 @@ def choose_contact(*json: Any) -> None:
     pass
 
 
+class MessageUpdate:
+    def __init__(self, message, current_user, target_user) -> None:
+        self.message = message
+        self.current_user = current_user
+        self.target_user = target_user
+
+
 @socketio.on('message')
 def handle_message(msg: str, current_user_username: str, target_user: dict[str, Any]) -> None:
     '''
@@ -91,9 +98,18 @@ def handle_message(msg: str, current_user_username: str, target_user: dict[str, 
 
     __insert_message(msg, current_user, target_user)
 
-    print('Message: ' + msg)
+    message_update = MessageUpdate(
+        msg,
+        json.dumps(current_user, cls=CustomEncoder),
+        json.dumps(target_user, cls=CustomEncoder))
 
-    send([msg, json.dumps(current_user, cls=CustomEncoder), json.dumps(target_user, cls=CustomEncoder)], broadcast=True)
+    data = {
+        "message": message_update.message,
+        "target_user": message_update.target_user,
+        "current_user": message_update.current_user
+    }
+
+    send(json.dumps(data), broadcast=True)
 
 
 class CustomEncoder(json.JSONEncoder):

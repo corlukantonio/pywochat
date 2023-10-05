@@ -103,6 +103,8 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
 
     // args = [msg, loggedInUserUsername, targetUser]
     socket.on('message', async (args) => {
+      let messageUpdate = MessageUpdate.Create(args);
+
       let targetUser = $('#targetUser span').text();
 
       targetUser = targetUser.replace('(', '');
@@ -114,33 +116,18 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
 
       await messagesHandler.appendMessage(args);
       await contactsHandler.updateLastMessage(args);
-
-      let sentMessages = await messagesHandler.getSentMessages();
-
-      sentMessages.forEach(async (elem, i) => {
-        let messageInfo = (await messagesHandler.getMessageInfo(i))
-          .text()
-          .split(' ');
-
-        if (
-          (JSON.parse(messageInfo[0])['username'] == loggedInUserUsername &&
-            messageInfo[1] == targetUserArr[2]) ||
-          (messageInfo[0] == targetUserArr[2] &&
-            messageInfo[1] == loggedInUserUsername)
-        ) {
-          $(elem).css('display', 'block');
-          if (firstMessage) {
-            $(elem).addClass('first_message');
-            firstMessage = false;
-          }
-        } else {
-          $(elem).css('display', 'block');
-        }
-      });
+      await messagesHandler.displayMessages(targetUserArr);
 
       messagesHandler.scrollToLatest();
     });
   });
+
+  class MessageUpdate {
+    static Create(data) {
+      console.log(data);
+      return JSON.parse(data);
+    }
+  }
 
   eventUtility.addEvent(window, 'load', Utils.resizeChatFrame);
   eventUtility.addEvent(window, 'resize', Utils.resizeChatFrame);
