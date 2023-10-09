@@ -105,8 +105,14 @@ def handle_message(msg: str, current_user_username: str, target_user: dict[str, 
 
     data = {
         "message": message_update.message,
-        "target_user": message_update.target_user,
-        "current_user": message_update.current_user
+        "target_user": {
+            "id": target_user.id,
+            "username": target_user.username
+        },
+        "current_user": {
+            "id": current_user.id,
+            "username": current_user.username
+        }
     }
 
     send(json.dumps(data), broadcast=True)

@@ -105,6 +105,8 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
     socket.on('message', async (args) => {
       let messageUpdate = MessageUpdate.Create(args);
 
+      console.log(messageUpdate);
+
       let targetUser = $('#targetUser span').text();
 
       targetUser = targetUser.replace('(', '');
@@ -123,9 +125,22 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
   });
 
   class MessageUpdate {
+    constructor(message, target_user, current_user) {
+      this.message = message;
+      this.current_user = current_user;
+      this.target_user = target_user;
+    }
+
     static Create(data) {
-      console.log(data);
-      return JSON.parse(data);
+      var parsed = JSON.parse(data);
+
+      var messageUpdate = new MessageUpdate(
+        parsed.message,
+        parsed.target_user,
+        parsed.current_user
+      );
+
+      return messageUpdate;
     }
   }
 
