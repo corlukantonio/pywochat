@@ -70,67 +70,41 @@ def choose_contact(*json: Any) -> None:
     pass
 
 
-class MessageUpdate:
-    def __init__(self, message, current_user, target_user) -> None:
-        self.message = message
-        self.current_user = current_user
-        self.target_user = target_user
-
-
 @socketio.on('message')
-def handle_message(msg: str, current_user_username: str, target_user: dict[str, Any]) -> None:
+def handle_message(msg: str, sender_username: str, target_user: list[str]) -> None:
     '''
     Handles message.
 
     Parameters:
         msg (str): Message.
-        current_user_username (str): Current user username.
-        target_user (dict[str, Any]): Target user.
+        sender_username (str): Sender username.
+        target_user (list[str]): Target user.
     '''
 
-    current_user: Row[Any] = __get_user_by_username(current_user_username)
-    target_user: Row[Any] = __get_user_by_username(target_user[2])
+    print(target_user)
 
-    print('Target user: ' + msg)
+    sender: Row[Any] | None = __get_user_by_username(sender_username)
+    receiver: Row[Any] | None = __get_user_by_username(target_user[2])
 
-    if target_user is not None:
-        print(str(target_user[0]) + ' ' + str(current_user[0]))
+    if sender is None:
+        raise ValueError('Sender cannot be None.')
 
-    __insert_message(msg, current_user, target_user)
+    if receiver is None:
+        raise ValueError('Receiver cannot be None.')
 
-    message_update = MessageUpdate(
-        msg,
-        json.dumps(current_user, cls=CustomEncoder),
-        json.dumps(target_user, cls=CustomEncoder))
+    __insert_message(msg, sender, receiver)
 
-    data = {
-        "message": message_update.message,
-        "target_user": {
-            "id": target_user.id,
-            "username": target_user.username
-        },
-        "current_user": {
-            "id": current_user.id,
-            "username": current_user.username
-        }
-    }
+    data = __get_message_update(msg, sender, receiver)
 
     send(json.dumps(data), broadcast=True)
 
 
-class CustomEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Row):
-            return {'id': obj.id, 'username': obj.username}
-        return super().default(obj)
-
-
-def __get_user_by_username(username: str) -> Row[Any]:
+def __get_user_by_username(username: str) -> (Row[Any] | None):
     '''
     Gets user by username.
 
     Parameters:
-        user (str): Username.
+        username (str): Username.
 
     Returns:
         Row[Any] | None: User.
@@ -142,14 +116,14 @@ def __get_user_by_username(username: str) -> Row[Any]:
     return db.session.execute(sql, params).fetchone()
 
 
-def __insert_message(msg: str, current_user: Row[Any], target_user: dict[str, Any]) -> None:
+def __insert_message(msg: str, sender: Row[Any], receiver: Row[Any]) -> None:
     '''
     Inserts message.
 
     Parameters:
         msg (str): Message.
-        current_user (Row[Any]): Current user.
-        target_user (dict[str, Any]): Target user.
+        sender (Row[Any]): Sender.
+        receiver (Row[Any]): Receiver.
     '''
 
     sql: TextClause = text(
@@ -158,14 +132,28 @@ def __insert_message(msg: str, current_user: Row[Any], target_user: dict[str, An
         VALUES (:author_id, :sent_to_id, :created, :content)
         ''')
     params: dict[str, Any] = {
-        'author_id': current_user[0],
-        'sent_to_id': target_user[0],
+        'author_id': sender[0],
+        'sent_to_id': receiver[0],
         'created': datetime.datetime.utcnow(),
         'content': msg
     }
 
     db.session.execute(sql, params)
     db.session.commit()
+
+
+def __get_message_update(msg: str, sender: Row[Any], receiver: Row[Any]) -> dict[str, Any]:
+    return {
+        "message": msg,
+        "sender": {
+            "id": sender.id,
+            "username": sender.username
+        },
+        "receiver": {
+            "id": receiver.id,
+            "username": receiver.username
+        }
+    }
 
 
 def create_app() -> Flask:

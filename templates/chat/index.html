@@ -116,33 +116,13 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
 
       let firstMessage = true;
 
-      await messagesHandler.appendMessage(args);
+      await messagesHandler.appendMessage(messageUpdate);
       await contactsHandler.updateLastMessage(args);
       await messagesHandler.displayMessages(targetUserArr);
 
       messagesHandler.scrollToLatest();
     });
   });
-
-  class MessageUpdate {
-    constructor(message, target_user, current_user) {
-      this.message = message;
-      this.current_user = current_user;
-      this.target_user = target_user;
-    }
-
-    static Create(data) {
-      var parsed = JSON.parse(data);
-
-      var messageUpdate = new MessageUpdate(
-        parsed.message,
-        parsed.target_user,
-        parsed.current_user
-      );
-
-      return messageUpdate;
-    }
-  }
 
   eventUtility.addEvent(window, 'load', Utils.resizeChatFrame);
   eventUtility.addEvent(window, 'resize', Utils.resizeChatFrame);

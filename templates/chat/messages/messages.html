@@ -35,22 +35,22 @@
     getTargetUser = async () =>
       $('#targetUser span').text().replace('(', '').replace(')', '').split(' ');
 
-    appendMessage = async (args) => {
+    appendMessage = async (messageUpdate) => {
       let userMatch =
-        JSON.parse(args[1])['username'] === this.loggedInUserUsername;
+        messageUpdate['sender']['username'] === this.loggedInUserUsername;
 
       $('#msgsView').append(
         (userMatch
           ? "<div style='display: block;' class='sent_msgs sender'>"
           : "<div style='display: block;' class='sent_msgs receiver'>") +
           "<span class='msg_info' style='display: none;'>" +
-          args[1] +
+          messageUpdate['sender']['username'] +
           ' ' +
-          args[2][2] +
+          messageUpdate['receiver']['username'] +
           '</span>' +
           "<div class='msg_wrapper'>" +
           '<span>' +
-          args[0] +
+          messageUpdate['message'] +
           '</span>' +
           '</div>' +
           "<span class='sent_time'>" +

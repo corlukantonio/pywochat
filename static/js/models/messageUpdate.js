@@ -1,39 +1,7 @@
 //@ts-check
 
-class MessageParticipant {
-  /**
-   * Constructor.
-   *
-   * @param {number} id ID.
-   * @param {string} username Username.
-   */
-  constructor(id, username) {
-    this.id = id;
-    this.usename = username;
-  }
-
-  /**
-   * Create.
-   *
-   * @param {object} obj Object.
-   * @returns {MessageParticipant} Message participant object.
-   */
-  static Create = (obj) => {
-    if (!obj.hasOwnProperty('id')) {
-      throw new Error("The object does not contain 'id' property.");
-    }
-
-    if (!obj.hasOwnProperty('username')) {
-      throw new Error("The object does not contain 'username' property.");
-    }
-
-    if (!isNaN(obj['id'])) {
-      throw new Error("The 'id' property should be a number.");
-    }
-
-    return new MessageParticipant(obj['id'], obj['username']);
-  };
-}
+import { MissingPropertyError } from '../errors/missingPropertyError.js';
+import { MessageParticipant } from './messageParticipant.js';
 
 class MessageUpdate {
   /**
@@ -111,6 +79,18 @@ class MessageUpdate {
     if (typeof data === 'string') {
       var parsed = JSON.parse(data);
 
+      if (!parsed.hasOwnProperty('message')) {
+        throw new MissingPropertyError('message');
+      }
+
+      if (!parsed.hasOwnProperty('sender')) {
+        throw new MissingPropertyError('sender');
+      }
+
+      if (!parsed.hasOwnProperty('receiver')) {
+        throw new MissingPropertyError('receiver');
+      }
+
       return MessageUpdate.createWithParams(
         parsed['message'],
         parsed['sender'],
@@ -121,3 +101,5 @@ class MessageUpdate {
     }
   };
 }
+
+window.MessageUpdate = MessageUpdate;

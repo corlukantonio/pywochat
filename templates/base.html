@@ -66,6 +66,22 @@
       type="text/javascript"
     ></script>
 
+    <!-- Errors. -->
+    <script
+      src="{{ url_for('static', filename='js/errors/missingPropertyError.js') }}"
+      type="module"
+    ></script>
+
+    <!-- Models. -->
+    <script
+      src="{{ url_for('static', filename='js/models/messageParticipant.js') }}"
+      type="module"
+    ></script>
+    <script
+      src="{{ url_for('static', filename='js/models/messageUpdate.js') }}"
+      type="module"
+    ></script>
+
     {{ JSGlue.include() }}
   </head>
   <body>
