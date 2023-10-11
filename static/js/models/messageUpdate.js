@@ -3,13 +3,13 @@
 import { MissingPropertyError } from '../errors/missingPropertyError.js';
 import { MessageParticipant } from './messageParticipant.js';
 
-class MessageUpdate {
+export class MessageUpdate {
   /**
    * Constructor.
    *
-   * @param {string} message Message.
-   * @param {MessageParticipant} sender Sender.
-   * @param {MessageParticipant} receiver Receiver.
+   * @param {string} message
+   * @param {MessageParticipant} sender
+   * @param {MessageParticipant} receiver
    */
   constructor(message, sender, receiver) {
     this.message = message;
@@ -18,12 +18,12 @@ class MessageUpdate {
   }
 
   /**
-   * Create.
+   * Creates new `MessageUpdate` object.
    *
-   * @param {string} arg1 Arg 1.
-   * @param {object} arg2 Arg 2.
-   * @param {object} arg3 Arg 3.
-   * @returns {MessageUpdate} Message update object.
+   * @param {string} arg1
+   * @param {object} arg2
+   * @param {object} arg3
+   * @returns {MessageUpdate}
    */
   static Create = (arg1, arg2 = null, arg3 = null) => {
     if (typeof arg1 === 'string' && arg2 !== null && arg3 !== null) {
@@ -38,12 +38,12 @@ class MessageUpdate {
   };
 
   /**
-   * Create with params.
+   * Creates new `MessageUpdate` object with params.
    *
-   * @param {string} message Message.
-   * @param {object} sender Sender.
-   * @param {object} receiver Receiver.
-   * @returns {MessageUpdate} Message update object.
+   * @param {string} message
+   * @param {object} sender
+   * @param {object} receiver
+   * @returns {MessageUpdate}
    */
   static createWithParams = (message, sender, receiver) => {
     if (!this.hasMessageParticipantProps(sender)) {
@@ -63,17 +63,17 @@ class MessageUpdate {
   /**
    * Has message participant properties.
    *
-   * @param {object} obj Object.
-   * @returns {boolean} Boolean.
+   * @param {object} obj
+   * @returns {boolean}
    */
   static hasMessageParticipantProps = (obj) =>
     obj.hasOwnProperty('id') && obj.hasOwnProperty('username');
 
   /**
-   * Create with string.
+   * Creates new `MessageUpdate` object with string.
    *
-   * @param {string} data Data.
-   * @returns {MessageUpdate} Message update object.
+   * @param {string} data
+   * @returns {MessageUpdate}
    */
   static createWithString = (data) => {
     if (typeof data === 'string') {

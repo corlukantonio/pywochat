@@ -4,8 +4,8 @@ export class MessageParticipant {
   /**
    * Constructor.
    *
-   * @param {number} id ID.
-   * @param {string} username Username.
+   * @param {number} id
+   * @param {string} username
    */
   constructor(id, username) {
     this.id = id;
@@ -13,10 +13,10 @@ export class MessageParticipant {
   }
 
   /**
-   * Create.
+   * Creates new `MessageParticipant` object.
    *
-   * @param {object} obj Object.
-   * @returns {MessageParticipant} Message participant object.
+   * @param {object} obj
+   * @returns {MessageParticipant}
    */
   static Create = (obj) => {
     if (!obj.hasOwnProperty('id')) {

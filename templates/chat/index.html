@@ -46,8 +46,8 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
 
       switch (eType) {
         case 'click':
-          let isClickedOutside = await searchBarHandler.isClickedOutside(eSrc);
-          let isAddContact = await searchResultsHandler.isAddContact(eSrc);
+          let isClickedOutside = searchBarHandler.isClickedOutside(eSrc);
+          let isAddContact = searchResultsHandler.isAddContact(eSrc);
           let isInboxUser =
             $(eSrc).hasClass('inbox_user_info') ||
             $(eSrc).hasClass('inbox_last_msg');
