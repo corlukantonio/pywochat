@@ -41,7 +41,7 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
     );
 
     handleEvent = async (event) => {
-      let eSrc = eventUtility.getTarget(event);
+      let eSrc = EventManager.getTarget(event);
       let eType = event.type;
 
       switch (eType) {
@@ -73,8 +73,8 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
       }
     };
 
-    eventUtility.addEvent(document, 'click', handleEvent);
-    eventUtility.addEvent(document, 'keyup', handleEvent);
+    EventManager.addEvent(document, 'click', handleEvent);
+    EventManager.addEvent(document, 'keyup', handleEvent);
 
     socket.on('connect', async () => {
       await contactsHandler.loadLatestMessage();
@@ -122,9 +122,9 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
 
       messagesHandler.scrollToLatest();
     });
-  });
 
-  eventUtility.addEvent(window, 'load', Utils.resizeChatFrame);
-  eventUtility.addEvent(window, 'resize', Utils.resizeChatFrame);
+    EventManager.addEvent(window, 'load', Utils.resizeChatFrame);
+    EventManager.addEvent(window, 'resize', Utils.resizeChatFrame);
+  });
 </script>
 {% endif %} {% endblock %}
