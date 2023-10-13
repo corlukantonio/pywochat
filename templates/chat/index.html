@@ -105,20 +105,9 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
     socket.on('message', async (args) => {
       let messageUpdate = MessageUpdate.Create(args);
 
-      console.log(messageUpdate);
-
-      let targetUser = $('#targetUser span').text();
-
-      targetUser = targetUser.replace('(', '');
-      targetUser = targetUser.replace(')', '');
-
-      let targetUserArr = targetUser.split(' ');
-
-      let firstMessage = true;
-
       await messagesHandler.appendMessage(messageUpdate);
       await contactsHandler.updateLastMessage(args);
-      await messagesHandler.displayMessages(targetUserArr);
+      await messagesHandler.displayMessages();
 
       messagesHandler.scrollToLatest();
     });

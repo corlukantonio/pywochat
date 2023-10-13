@@ -1,5 +1,6 @@
 //@ts-check
 
+import { Utils } from '../utils.js';
 import { SearchInputHandler } from './searchInputHandler.js';
 
 export class SearchResultsHandler {
@@ -19,7 +20,7 @@ export class SearchResultsHandler {
   /**
    * Is add contact.
    *
-   * @param {*} eSrc
+   * @param {EventTarget} eSrc
    * @returns {boolean}
    */
   isAddContact = (eSrc) => $(eSrc).hasClass('add_contact');
@@ -29,15 +30,12 @@ export class SearchResultsHandler {
    *
    * @param {boolean} isClickedOutside
    */
-  handleSearchResultsVisibility = async (isClickedOutside = false) => {
+  handleSearchResultsVisibility = (isClickedOutside = false) => {
     let searchedValue = this.searchInputHandler.getSearchedValue();
 
-    $('.search_results').each(async (elem, index) => {
+    $('.search_results').each((elem, index) => {
       let searchedValueIndex = this.getSearchedValueIndex(index, searchedValue);
       let isEmptyOrNotFound = !searchedValue || searchedValueIndex > -1;
-
-      console.log(elem);
-      console.log(index);
 
       if (isClickedOutside) this.hideElem(index);
       else if (isEmptyOrNotFound) this.showElem(index);
@@ -72,12 +70,12 @@ export class SearchResultsHandler {
   /**
    * Adds contact.
    *
-   * @param {*} eSrc
+   * @param {EventTarget} eSrc
    */
-  addContact = async (eSrc) => {
+  addContact = (eSrc) => {
     Utils.setToAdded(eSrc);
 
-    let foundContact = await this.getFoundContact();
+    let foundContact = this.getFoundContact();
     let payload = {
       loggedInUserUsername: this.loggedInUserUsername,
       foundContact,
@@ -87,11 +85,11 @@ export class SearchResultsHandler {
   };
 
   /**
-   * Get found contact.
+   * Gets found contact.
    *
-   * @returns {Promise<string>}
+   * @returns {string}
    */
-  getFoundContact = async () =>
+  getFoundContact = () =>
     $($(event.target).parent().parent().children()[0])
       .text()
       .replace('\n', '')
@@ -104,16 +102,16 @@ export class SearchResultsHandler {
   /**
    * Gets add contacts.
    *
-   * @returns {Promise<Array<HTMLAnchorElement>>}
+   * @returns {Array<HTMLAnchorElement>}
    */
-  getAddContacts = async () => $('.add_contact').toArray();
+  getAddContacts = () => $('.add_contact').toArray();
 
   /**
    * Gets found contacts.
    *
-   * @returns {Promise<Array<HTMLSpanElement>>}
+   * @returns {Array<HTMLSpanElement>}
    */
-  getFoundContacts = async () => $('.found_contact').toArray();
+  getFoundContacts = () => $('.found_contact').toArray();
 }
 
 window.SearchResultsHandler = SearchResultsHandler;

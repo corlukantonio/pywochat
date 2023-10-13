@@ -1,4 +1,11 @@
-class Utils {
+//@ts-check
+
+export class Utils {
+  /**
+   * Gets date as string.
+   *
+   * @returns {string}
+   */
   static getDateAsString() {
     let date = new Date();
     let year = date.getFullYear();
@@ -55,3 +62,5 @@ class Utils {
     $(eSrc).css('margin-top', 2 + 'px');
   }
 }
+
+window.Utils = Utils;

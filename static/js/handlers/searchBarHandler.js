@@ -4,7 +4,7 @@ export class SearchBarHandler {
   /**
    * Is clicked outside.
    *
-   * @param {*} eSrc
+   * @param {EventTarget} eSrc
    * @returns {boolean}
    */
   isClickedOutside = (eSrc) =>
