@@ -2,7 +2,7 @@
 
 // import { Socket } from 'socket.io';
 import { Utils } from '../utils.js';
-import { ComposeMessageHandler } from './composeMessageHandler.js';
+import { ComposeMessageHandler } from './composeMessageHandler.mjs';
 
 export class MessagesHandler {
   /**
@@ -125,7 +125,12 @@ export class MessagesHandler {
    */
   getSentMessages = () => $('.sent_msgs').toArray();
 
-  getMessagesContent = () => $('.msg_content');
+  /**
+   * Gets messages content.
+   *
+   * @returns {Array<HTMLElement>}
+   */
+  getMessagesContent = () => $('.msg_content').toArray();
 
   /**
    * Gets messages info.
@@ -142,8 +147,19 @@ export class MessagesHandler {
    */
   getMessageInfo = (index) => $(this.getMessagesInfo()[index]);
 
+  /**
+   * Sets target user.
+   *
+   * @param {string} targetUser
+   * @returns {JQuery<HTMLElement>}
+   */
   setTargetUser = (targetUser) => $('#targetUser span').text(targetUser);
 
+  /**
+   * Scrolls to latest.
+   *
+   * @returns {JQuery<HTMLElement>}
+   */
   scrollToLatest = () =>
     $('#msgsView').scrollTop($('#msgsView')[0].scrollHeight);
 }
