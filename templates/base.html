@@ -66,6 +66,12 @@
       type="module"
     ></script>
 
+    <!-- Packages. -->
+    <!-- <script
+      src="{{ url_for('static', filename='node_modules/socket.io/dist/socket.js') }}"
+      type="module"
+    ></script> -->
+
     <!-- Errors. -->
     <script
       src="{{ url_for('static', filename='js/errors/missingPropertyError.js') }}"
@@ -77,20 +83,20 @@
       src="{{ url_for('static', filename='js/models/messageParticipant.js') }}"
       type="module"
     ></script>
-    <script
+    <!-- <script
       src="{{ url_for('static', filename='js/models/messageUpdate.js') }}"
       type="module"
-    ></script>
+    ></script> -->
 
     <!-- Handlers. -->
     <script
       src="{{ url_for('static', filename='js/handlers/composeMessageHandler.js') }}"
       type="module"
     ></script>
-    <script
+    <!-- <script
       src="{{ url_for('static', filename='js/handlers/messagesHandler.js') }}"
       type="module"
-    ></script>
+    ></script> -->
     <script
       src="{{ url_for('static', filename='js/handlers/searchBarHandler.js') }}"
       type="module"
@@ -101,6 +107,10 @@
     ></script>
     <script
       src="{{ url_for('static', filename='js/handlers/searchResultsHandler.js') }}"
+      type="module"
+    ></script>
+    <script
+      src="{{ url_for('static', filename='dist/main.bundle.js') }}"
       type="module"
     ></script>
 

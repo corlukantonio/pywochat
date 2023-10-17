@@ -15,3 +15,5 @@ export class ComposeMessageHandler {
    */
   emptyInputMessage = () => $('#inputMsg').val('');
 }
+
+window.ComposeMessageHandler = ComposeMessageHandler;

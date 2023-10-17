@@ -1,8 +1,9 @@
 //@ts-check
 
 // import { Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 import { Utils } from '../utils.js';
-import { ComposeMessageHandler } from './composeMessageHandler.mjs';
+import { ComposeMessageHandler } from './composeMessageHandler.js';
 
 export class MessagesHandler {
   /**
