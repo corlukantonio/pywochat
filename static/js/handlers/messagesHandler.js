@@ -1,6 +1,5 @@
 //@ts-check
 
-// import { Socket } from 'socket.io';
 import { Socket } from 'socket.io';
 import { Utils } from '../utils.js';
 import { ComposeMessageHandler } from './composeMessageHandler.js';
@@ -165,4 +164,5 @@ export class MessagesHandler {
     $('#msgsView').scrollTop($('#msgsView')[0].scrollHeight);
 }
 
+// @ts-ignore
 window.MessagesHandler = MessagesHandler;

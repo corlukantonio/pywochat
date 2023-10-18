@@ -1,4 +1,4 @@
-import { ComposeMessageHandler } from '../js/handlers/composeMessageHandler.mjs';
+import { ComposeMessageHandler } from '../js/handlers/composeMessageHandler.js';
 
 jest.mock('jquery', () => {
   return {
@@ -6,25 +6,23 @@ jest.mock('jquery', () => {
   };
 });
 
+// Create a function to set up the DOM environment using jsdom
+function setupDOM() {
+  const div = document.createElement('div');
+  div.innerHTML = '<input id="inputMsg" value="Test Value" />';
+  document.body.appendChild(div);
+}
+
 describe('ComposeMessageHandler', () => {
-  let composeMessageHandler;
-
   beforeEach(() => {
-    composeMessageHandler = new ComposeMessageHandler();
+    setupDOM();
   });
 
-  afterEach(() => {
-    // Clear the mock after each test
-    jest.clearAllMocks();
-  });
-
-  it('should getInputMessage return input value', () => {
-    // Mock the jQuery.val() function
-    $.fn.val = jest.fn(() => 'Test message');
-
-    const result = composeMessageHandler.getInputMessage();
-
-    expect($.fn.val).toHaveBeenCalled();
-    expect(result).toBe('Test message');
+  describe('getInputMessage', () => {
+    it('should get the input message', () => {
+      const composeMessageHandler = new ComposeMessageHandler();
+      const inputMessage = composeMessageHandler.getInputMessage();
+      expect(inputMessage).toBe('Test Value');
+    });
   });
 });
