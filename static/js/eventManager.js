@@ -81,6 +81,7 @@ export class EventManager {
    * @param {EventListenerOrEventListenerObject | null} callback
    */
   static attachEventExtension = (obj, type, callback) => {
+    // @ts-ignore
     obj.attachEvent('on' + type, callback);
   };
 
@@ -103,6 +104,7 @@ export class EventManager {
    * @param {EventListenerOrEventListenerObject | null} callback
    */
   static detachEventExtension = (obj, type, callback) => {
+    // @ts-ignore
     obj.detachEvent('on' + type, callback);
   };
 
@@ -141,4 +143,5 @@ export class EventManager {
   };
 }
 
+// @ts-ignore
 window.EventManager = EventManager;

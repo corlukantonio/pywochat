@@ -1,6 +1,8 @@
 //@ts-check
 
+import {} from 'jquery';
 import { Socket } from 'socket.io';
+import { TargetUser } from '../models/targetUser.js';
 import { Utils } from '../utils.js';
 import { ComposeMessageHandler } from './composeMessageHandler.js';
 
@@ -22,15 +24,13 @@ export class MessagesHandler {
    * Sends message.
    */
   sendMessage = () => {
-    let input = this.composeMessageHandler.getInputMessage();
+    let message = this.composeMessageHandler.getInputMessage();
 
-    if (input) {
-      let targetUser = this.getTargetUser();
+    if (message) {
+      let targetUser = TargetUser.Create(this.getTargetUser());
 
-      if (targetUser.length > 1) {
-        this.socket.send(input, this.loggedInUserUsername, targetUser);
-        this.composeMessageHandler.emptyInputMessage();
-      }
+      this.socket.send(message, this.loggedInUserUsername, targetUser);
+      this.composeMessageHandler.emptyInputMessage();
     }
   };
 

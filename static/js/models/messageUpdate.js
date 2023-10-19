@@ -91,7 +91,7 @@ export class MessageUpdate {
         throw new MissingPropertyError('receiver');
       }
 
-      return MessageUpdate.createWithParams(
+      return MessageUpdate.Create(
         parsed['message'],
         parsed['sender'],
         parsed['receiver']
@@ -102,4 +102,5 @@ export class MessageUpdate {
   };
 }
 
+// @ts-ignore
 window.MessageUpdate = MessageUpdate;
