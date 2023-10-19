@@ -84,7 +84,7 @@ def handle_message(msg: str, sender_username: str, target_user: list[str]) -> No
     print(target_user)
 
     sender: Row[Any] | None = __get_user_by_username(sender_username)
-    receiver: Row[Any] | None = __get_user_by_username(target_user[2])
+    receiver: Row[Any] | None = __get_user_by_username(target_user["username"])
 
     if sender is None:
         raise ValueError('Sender cannot be None.')
@@ -188,4 +188,4 @@ migrate = Migrate(app, db, directory="migrations")
 
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, host='0.0.0.0')

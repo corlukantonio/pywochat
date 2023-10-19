@@ -79,10 +79,10 @@
       });
     };
 
-    updateLastMessage = async (args) => {
+    updateLastMessage = async (messageUpdate) => {
       let inboxUsers = await this.getInboxUsers();
       let userMatch =
-        JSON.parse(args[1])['username'] === this.loggedInUserUsername;
+        messageUpdate.sender.username === this.loggedInUserUsername;
       let newMsgSound = new Audio(
         Flask.url_for('static', { filename: 'stairs.mp3' })
       );
@@ -90,17 +90,17 @@
       inboxUsers.forEach((elem) => {
         let inboxUserInfo = $($(elem).children()[0]);
         let inboxLastMessage = $($(elem).children()[1]);
-        let senderUsername = JSON.parse(args[1])['username'];
-        let receiverUsername = JSON.parse(args[2])['username'];
+        let senderUsername = messageUpdate.sender.username;
+        let receiverUsername = messageUpdate.receiver.username;
 
         if (userMatch && inboxUserInfo.text().indexOf(receiverUsername) > -1)
-          inboxLastMessage.text(args[0]);
+          inboxLastMessage.text(messageUpdate.message);
         else if (
           !userMatch &&
           inboxUserInfo.text().indexOf(senderUsername) > -1 &&
           this.loggedInUserUsername.indexOf(receiverUsername) > -1
         ) {
-          inboxLastMessage.text(args[0]);
+          inboxLastMessage.text(messageUpdate.message);
           newMsgSound.play();
         }
       });

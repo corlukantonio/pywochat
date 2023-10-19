@@ -91,7 +91,7 @@ export class MessagesHandler {
           firstMessage = false;
         }
       } else {
-        $(elem).css('display', 'block');
+        $(elem).css('display', 'none');
       }
     });
 
@@ -106,8 +106,7 @@ export class MessagesHandler {
    * @returns {boolean}
    */
   isMessageBetweenUsers = (messageInfo, targetUser) => {
-    let isMessageFromLoggedInUser =
-      JSON.parse(messageInfo[0])['username'] == this.loggedInUserUsername;
+    let isMessageFromLoggedInUser = messageInfo[0] == this.loggedInUserUsername;
     let isMessageForTargetUser = messageInfo[1] == targetUser[2];
     let isMessageFromTargetUser = messageInfo[0] == targetUser[2];
     let isMessageForLoggedInUser = messageInfo[1] == this.loggedInUserUsername;

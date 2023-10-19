@@ -106,7 +106,7 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
       let messageUpdate = MessageUpdate.Create(args);
 
       await messagesHandler.appendMessage(messageUpdate);
-      await contactsHandler.updateLastMessage(args);
+      await contactsHandler.updateLastMessage(messageUpdate);
       await messagesHandler.displayMessages();
 
       messagesHandler.scrollToLatest();
