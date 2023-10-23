@@ -1,6 +1,24 @@
 //@ts-check
 
+import {} from 'jquery';
+
+const composeMessageHandlerInstance = Symbol('composeMessageHandlerInstance');
+
 export class ComposeMessageHandler {
+  /**
+   * Gets instance.
+   *
+   * @returns {ComposeMessageHandler}
+   */
+  static getInstance = () => {
+    if (ComposeMessageHandler[composeMessageHandlerInstance] === undefined) {
+      ComposeMessageHandler[composeMessageHandlerInstance] =
+        new ComposeMessageHandler();
+    }
+
+    return ComposeMessageHandler[composeMessageHandlerInstance];
+  };
+
   /**
    * Gets input message.
    *
@@ -15,5 +33,3 @@ export class ComposeMessageHandler {
    */
   emptyInputMessage = () => $('#inputMsg').val('');
 }
-
-window.ComposeMessageHandler = ComposeMessageHandler;

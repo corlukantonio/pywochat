@@ -10,12 +10,11 @@ export class MessagesHandler {
   /**
    * Constructor.
    *
-   * @param {ComposeMessageHandler} composeMessageHandler
    * @param {Socket} socket
    * @param {string} loggedInUserUsername
    */
-  constructor(composeMessageHandler, socket, loggedInUserUsername) {
-    this.composeMessageHandler = composeMessageHandler;
+  constructor(socket, loggedInUserUsername) {
+    this.composeMessageHandler = ComposeMessageHandler.getInstance();
     this.socket = socket;
     this.loggedInUserUsername = loggedInUserUsername;
   }

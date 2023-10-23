@@ -28,12 +28,7 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
       loggedInUserUsername
     );
     let searchBarHandler = new SearchBarHandler();
-    let composeMessageHandler = new ComposeMessageHandler();
-    let messagesHandler = new MessagesHandler(
-      composeMessageHandler,
-      socket,
-      loggedInUserUsername
-    );
+    let messagesHandler = new MessagesHandler(socket, loggedInUserUsername);
     let contactsHandler = new ContactsHandler(
       messagesHandler,
       socket,
