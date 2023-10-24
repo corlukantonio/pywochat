@@ -21,17 +21,10 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
     let headerOnlineHandler = new HeaderOnlineHandler();
     let loggedInUserUsername =
       await headerOnlineHandler.getLoggedInUserUsername();
-    let searchResultsHandler = new SearchResultsHandler(
-      socket,
-      loggedInUserUsername
-    );
+    let searchResultsHandler = new SearchResultsHandler(socket);
     let searchBarHandler = SearchBarHandler.getInstance();
-    let messagesHandler = new MessagesHandler(socket, loggedInUserUsername);
-    let contactsHandler = new ContactsHandler(
-      messagesHandler,
-      socket,
-      loggedInUserUsername
-    );
+    let messagesHandler = new MessagesHandler(socket);
+    let contactsHandler = new ContactsHandler(messagesHandler, socket);
 
     handleEvent = async (event) => {
       let eSrc = EventManager.getTarget(event);

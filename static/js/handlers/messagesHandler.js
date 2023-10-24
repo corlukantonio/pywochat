@@ -5,18 +5,19 @@ import { Socket } from 'socket.io';
 import { TargetUser } from '../models/targetUser.js';
 import { Utils } from '../utils.js';
 import { ComposeMessageHandler } from './composeMessageHandler.js';
+import { HeaderOnlineHandler } from './headerOnlineHandler.js';
 
 export class MessagesHandler {
   /**
    * Constructor.
    *
    * @param {Socket} socket
-   * @param {string} loggedInUserUsername
    */
-  constructor(socket, loggedInUserUsername) {
+  constructor(socket) {
     this.composeMessageHandler = ComposeMessageHandler.getInstance();
     this.socket = socket;
-    this.loggedInUserUsername = loggedInUserUsername;
+    this.loggedInUserUsername =
+      HeaderOnlineHandler.getInstance().getLoggedInUserUsername();
   }
 
   /**

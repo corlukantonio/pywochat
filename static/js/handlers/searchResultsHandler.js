@@ -2,6 +2,7 @@
 
 // import { Socket } from 'socket.io';
 import { Utils } from '../utils.js';
+import { HeaderOnlineHandler } from './headerOnlineHandler.js';
 import { SearchInputHandler } from './searchInputHandler.js';
 
 export class SearchResultsHandler {
@@ -14,7 +15,8 @@ export class SearchResultsHandler {
   constructor(socket, loggedInUserUsername) {
     this.searchInputHandler = SearchInputHandler.getInstance();
     this.socket = socket;
-    this.loggedInUserUsername = loggedInUserUsername;
+    this.loggedInUserUsername =
+      HeaderOnlineHandler.getInstance().getLoggedInUserUsername();
   }
 
   /**
