@@ -1,12 +1,25 @@
 //@ts-check
 
+const searchInputHandlerInstance = Symbol('searchInputHandlerInstance');
+
 export class SearchInputHandler {
+  /**
+   * Gets instance.
+   *
+   * @returns {SearchInputHandler}
+   */
+  static getInstance = () => {
+    if (SearchInputHandler[searchInputHandlerInstance] === undefined) {
+      SearchInputHandler[searchInputHandlerInstance] = new SearchInputHandler();
+    }
+
+    return SearchInputHandler[searchInputHandlerInstance];
+  };
+
   /**
    * Gets searched value.
    *
-   * @returns {string}
+   * @returns {string | undefined}
    */
-  getSearchedValue = () => $('#searchedValue').val().toUpperCase();
+  getSearchedValue = () => $('#searchedValue').val()?.toString().toUpperCase();
 }
-
-window.SearchInputHandler = SearchInputHandler;

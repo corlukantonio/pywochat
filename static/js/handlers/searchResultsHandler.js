@@ -1,5 +1,6 @@
 //@ts-check
 
+// import { Socket } from 'socket.io';
 import { Utils } from '../utils.js';
 import { SearchInputHandler } from './searchInputHandler.js';
 
@@ -7,12 +8,11 @@ export class SearchResultsHandler {
   /**
    * Constructor.
    *
-   * @param {SearchInputHandler} searchInputHandler
    * @param {*} socket
    * @param {string} loggedInUserUsername
    */
-  constructor(searchInputHandler, socket, loggedInUserUsername) {
-    this.searchInputHandler = searchInputHandler;
+  constructor(socket, loggedInUserUsername) {
+    this.searchInputHandler = SearchInputHandler.getInstance();
     this.socket = socket;
     this.loggedInUserUsername = loggedInUserUsername;
   }
@@ -33,39 +33,39 @@ export class SearchResultsHandler {
   handleSearchResultsVisibility = (isClickedOutside = false) => {
     let searchedValue = this.searchInputHandler.getSearchedValue();
 
-    $('.search_results').each((elem, index) => {
-      let searchedValueIndex = this.getSearchedValueIndex(index, searchedValue);
+    $('.search_results').each((index, elem) => {
+      let searchedValueIndex = this.getSearchedValueIndex(elem, searchedValue);
       let isEmptyOrNotFound = !searchedValue || searchedValueIndex > -1;
 
-      if (isClickedOutside) this.hideElem(index);
-      else if (isEmptyOrNotFound) this.showElem(index);
-      else this.hideElem(index);
+      if (isClickedOutside) this.hideElem(elem);
+      else if (isEmptyOrNotFound) this.showElem(elem);
+      else this.hideElem(elem);
     });
   };
 
   /**
    * Gets searched value index.
    *
-   * @param {number} index
-   * @param {string} searchedValue
+   * @param {HTMLElement} elem
+   * @param {string | undefined} searchedValue
    * @returns {number}
    */
-  getSearchedValueIndex = (index, searchedValue) =>
-    $('.found_contact', index).text().toUpperCase().indexOf(searchedValue);
+  getSearchedValueIndex = (elem, searchedValue) =>
+    $('.found_contact', elem).text().toUpperCase().indexOf(searchedValue);
 
   /**
    * Shows element.
    *
-   * @param {number} index
+   * @param {HTMLElement} elem
    */
-  showElem = (index) => $(index).css('display', 'block');
+  showElem = (elem) => $(elem).css('display', 'block');
 
   /**
    * Hides element.
    *
-   * @param {number} index
+   * @param {HTMLElement} elem
    */
-  hideElem = (index) => $(index).css('display', 'none');
+  hideElem = (elem) => $(elem).css('display', 'none');
 
   /**
    * Adds contact.

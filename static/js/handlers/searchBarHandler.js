@@ -1,6 +1,21 @@
 //@ts-check
 
+const searchBarHandlerInstance = Symbol('searchBarHandlerInstance');
+
 export class SearchBarHandler {
+  /**
+   * Gets instance.
+   *
+   * @returns {SearchBarHandler}
+   */
+  static getInstance = () => {
+    if (SearchBarHandler[searchBarHandlerInstance] === undefined) {
+      SearchBarHandler[searchBarHandlerInstance] = new SearchBarHandler();
+    }
+
+    return SearchBarHandler[searchBarHandlerInstance];
+  };
+
   /**
    * Is clicked outside.
    *
