@@ -18,9 +18,6 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
     let socket = io.connect(
       protocol + '//' + document.domain + ':' + location.port
     );
-    let headerOnlineHandler = new HeaderOnlineHandler();
-    let loggedInUserUsername =
-      await headerOnlineHandler.getLoggedInUserUsername();
     let searchResultsHandler = new SearchResultsHandler(socket);
     let searchBarHandler = SearchBarHandler.getInstance();
     let messagesHandler = new MessagesHandler(socket);
