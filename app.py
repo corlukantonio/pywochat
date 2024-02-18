@@ -197,7 +197,7 @@ def create_app_test(connection_uri: str) -> Flask:
 
     return app
 
-if 'PYTEST_RUNNING' not in os.environ:
+if 'TESTING' not in os.environ:
     app: Flask = Flask(__name__, instance_relative_config=True)
     JSGlue(app)
     socketio.init_app(app)

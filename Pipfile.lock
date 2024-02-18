@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1dafc96d2d5caf3dadac48f81e40d2be6451a481c2ba285e4b82dbb47048ab3a"
+            "sha256": "77ff69c4bc036e4bfdcc4c76339f915c4d46a1e843c4a5a81f9cb35670673e20"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -26,11 +26,11 @@
         },
         "bidict": {
             "hashes": [
-                "sha256:3959ca59d4d6997702d642bf1e5fd93cba299863723fc289545198f70c468578",
-                "sha256:f5154a0e42926b122f9b2cb06aeeb9af317f626eb864bd34c1b9cdc5eca8b040"
+                "sha256:03069d763bc387bbd20e7d49914e75fc4132a41937fa3405417e1a5a2d006d71",
+                "sha256:5dae8d4d79b552a71cbabc7deb25dfe8ce710b17ff41711e13010ead2abfc3e5"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==0.23.0"
+            "version": "==0.23.1"
         },
         "blinker": {
             "hashes": [
@@ -161,11 +161,11 @@
         },
         "dnspython": {
             "hashes": [
-                "sha256:233f871ff384d84c33b2eaf4358ffe7f8927eae3b257ad8467f9bdba7e7ac6bc",
-                "sha256:44c40af3bffed66e3307cea9ab667fd583e138ecc0777b18f262a9dae034e5fa"
+                "sha256:5ef3b9680161f6fa89daf8ad451b5f1a33b18ae8a1c6778cdf4b43f08c0a6e50",
+                "sha256:e8f0f9c23a7b7cb99ded64e6c3a6f3e701d78f50c55e002b839dea7225cff7cc"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==2.6.0"
+            "version": "==2.6.1"
         },
         "docker": {
             "hashes": [
@@ -515,6 +515,15 @@
             "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==8.0.1"
+        },
+        "pytest-env": {
+            "hashes": [
+                "sha256:aada77e6d09fcfb04540a6e462c58533c37df35fa853da78707b17ec04d17dfc",
+                "sha256:fcd7dc23bb71efd3d35632bde1bbe5ee8c8dc4489d6617fb010674880d96216b"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8'",
+            "version": "==1.1.3"
         },
         "python-engineio": {
             "hashes": [
