@@ -72,4 +72,4 @@ def test_postgres_container(client):
         "password": "123456"
     })
 
-    assert response.status_code == 200
+    assert response.status_code == 302
