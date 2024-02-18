@@ -8,6 +8,32 @@
 
 ## Setting WSL and Docker
 
+```bat
+C:\Users\Antonio>wsl --version
+WSL version: 2.0.14.0
+Kernel version: 5.15.133.1-1
+WSLg version: 1.0.59
+MSRDC version: 1.2.4677
+Direct3D version: 1.611.1-81528511
+DXCore version: 10.0.25131.1002-220531-1700.rs-onecore-base2-hyp
+Windows version: 10.0.19045.4046
+```
+
+```bash
+acorluka@DESKTOP-FBPD4LO:/mnt/c/Users/Antonio$ cat /etc/os-release
+PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
+NAME="Debian GNU/Linux"
+VERSION_ID="12"
+VERSION="12 (bookworm)"
+VERSION_CODENAME=bookworm
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+```
+
+[Installation instructions](https://docs.docker.com/engine/install/debian/)
+
 ## How to run it?
 
 Before you start doing any of the following, make sure you have [PostgreSQL](https://www.postgresql.org/) and [Anaconda](https://www.anaconda.com/) installed on your computer.

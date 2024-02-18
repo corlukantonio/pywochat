@@ -12,7 +12,7 @@ flask-sqlalchemy = "*"
 psycopg2 = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
-flask-jsglue = {editable = true, git = "https://github.com/corlukantonio/Flask-JSGlue.git"}
+flask-jsglue = {editable = true, git = "https://github.com/corlukantonio/Flask-JSGlue.git", ref = "e49d34d6f6ff88cc5ccb74f25914c9166439e7cc"}
 eventlet = "*"
 flask-migrate = "*"
 testcontainers = "*"
