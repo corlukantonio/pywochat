@@ -53,6 +53,7 @@ def client():
         connection_uri = container.get_connection_url()
 
         os.environ['SQLALCHEMY_DATABASE_URI'] = connection_uri
+        os.environ['PYWOCHAT_DATABASE_URI'] = connection_uri
 
         app = create_app_test(connection_uri)
         app.config.update({
