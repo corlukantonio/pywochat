@@ -29,19 +29,6 @@ for model_file in model_files:
         __import__(import_module)
 
 
-app: Flask = Flask(__name__, instance_relative_config=True)
-JSGlue(app)
-socketio.init_app(app)
-
-app.config.from_object(Config)
-app.register_blueprint(auth.bp)
-app.register_blueprint(chat.bp)
-app.add_url_rule('/', endpoint='index')
-
-db.init_app(app)
-
-migrate = Migrate(app, db, directory="migrations")
-
 @socketio.on('add_contact')
 def add_contact(json: dict[str, Any]) -> None:
     '''
@@ -209,6 +196,20 @@ def create_app_test(connection_uri: str) -> Flask:
         upgrade()
 
     return app
+
+if 'PYTEST_RUNNING' not in os.environ:
+    app: Flask = Flask(__name__, instance_relative_config=True)
+    JSGlue(app)
+    socketio.init_app(app)
+
+    app.config.from_object(Config)
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(chat.bp)
+    app.add_url_rule('/', endpoint='index')
+
+    db.init_app(app)
+
+    migrate = Migrate(app, db, directory="migrations")
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0')
