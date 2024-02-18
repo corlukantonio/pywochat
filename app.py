@@ -6,13 +6,14 @@ from typing import Any
 
 from flask import Flask
 from flask_jsglue import JSGlue
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 from flask_socketio import SocketIO, send
 from sqlalchemy import Row, TextClause, text
 
 import auth
 import chat
 from config import Config
+from config_test import ConfigTest
 from extensions import db, socketio
 from models.contact import Contact
 from models.message import Message
@@ -173,6 +174,31 @@ def create_app() -> Flask:
     app.register_blueprint(chat.bp)
     app.add_url_rule('/', endpoint='index')
     db.init_app(app)
+
+    return app
+
+def create_app_test(connection_uri: str) -> Flask:
+    app: Flask = Flask(__name__, instance_relative_config=True)
+    JSGlue(app)
+    socketio: SocketIO = SocketIO(app)
+
+    model_files = glob.glob(os.path.join(os.path.dirname(__file__), 'models', '*.py'))
+    for model_file in model_files:
+        if not model_file.endswith('__init__.py'):
+            import_name = os.path.basename(model_file)[:-3]
+            import_module = f'models.{import_name}'
+            __import__(import_module)
+
+    app.config.from_object(ConfigTest)
+    app.config['SQLALCHEMY_DATABASE_URI'] = connection_uri
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(chat.bp)
+    app.add_url_rule('/', endpoint='index')
+    db.init_app(app)
+    migrate = Migrate(app, db, directory="migrations")
+
+    with app.app_context():
+        upgrade()
 
     return app
 
