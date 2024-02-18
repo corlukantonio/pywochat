@@ -203,14 +203,14 @@ def create_app_test(connection_uri: str) -> Flask:
     return app
 
 
-app.config.from_object(Config)
-app.register_blueprint(auth.bp)
-app.register_blueprint(chat.bp)
-app.add_url_rule('/', endpoint='index')
+# app.config.from_object(Config)
+# app.register_blueprint(auth.bp)
+# app.register_blueprint(chat.bp)
+# app.add_url_rule('/', endpoint='index')
 
-db.init_app(app)
+# db.init_app(app)
 
-migrate = Migrate(app, db, directory="migrations")
+# migrate = Migrate(app, db, directory="migrations")
 
 
 if __name__ == '__main__':
