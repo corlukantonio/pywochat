@@ -2,10 +2,3 @@
   {% include 'chat/search-bar/components/search-input.html' %} {% include
   'chat/search-bar/components/search-results.html' %}
 </div>
-
-<script type="text/javascript">
-  class SearchBarHandler {
-    isClickedOutside = async (eSrc) =>
-      $('#searchBar').has(eSrc).length === 0 && !$('#searchBar').is(eSrc);
-  }
-</script>

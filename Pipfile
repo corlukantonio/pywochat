@@ -1,22 +1,22 @@
 [[source]]
-name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
-
-[dev-packages]
+name = "pypi"
 
 [packages]
 flask = "*"
+flask-jsglue = {editable = true, ref = "e49d34d6f6ff88cc5ccb74f25914c9166439e7cc", git = "git+https://github.com/corlukantonio/Flask-JSGlue.git"}
 flask-socketio = "*"
 flask-sqlalchemy = "*"
-psycopg2 = "*"
-psycopg2-binary = "*"
 gunicorn = "*"
-flask-jsglue = {editable = true, git = "https://github.com/corlukantonio/Flask-JSGlue.git"}
 eventlet = "*"
 flask-migrate = "*"
 testcontainers = "*"
 pytest = "*"
+psycopg2-binary = "*"
+pytest-env = "*"
+
+[dev-packages]
 
 [requires]
-python_version = "3.11.4"
+python_version = "3.11"

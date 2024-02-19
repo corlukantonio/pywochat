@@ -18,36 +18,19 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
     let socket = io.connect(
       protocol + '//' + document.domain + ':' + location.port
     );
-    let headerOnlineHandler = new HeaderOnlineHandler();
-    let loggedInUserUsername =
-      await headerOnlineHandler.getLoggedInUserUsername();
-    let searchInputHandler = new SearchInputHandler();
-    let searchResultsHandler = new SearchResultsHandler(
-      searchInputHandler,
-      socket,
-      loggedInUserUsername
-    );
-    let searchBarHandler = new SearchBarHandler();
-    let composeMessageHandler = new ComposeMessageHandler();
-    let messagesHandler = new MessagesHandler(
-      composeMessageHandler,
-      socket,
-      loggedInUserUsername
-    );
-    let contactsHandler = new ContactsHandler(
-      messagesHandler,
-      socket,
-      loggedInUserUsername
-    );
+    let searchResultsHandler = new SearchResultsHandler(socket);
+    let searchBarHandler = SearchBarHandler.getInstance();
+    let messagesHandler = new MessagesHandler(socket);
+    let contactsHandler = new ContactsHandler(messagesHandler, socket);
 
     handleEvent = async (event) => {
-      let eSrc = eventUtility.getTarget(event);
+      let eSrc = EventManager.getTarget(event);
       let eType = event.type;
 
       switch (eType) {
         case 'click':
-          let isClickedOutside = await searchBarHandler.isClickedOutside(eSrc);
-          let isAddContact = await searchResultsHandler.isAddContact(eSrc);
+          let isClickedOutside = searchBarHandler.isClickedOutside(eSrc);
+          let isAddContact = searchResultsHandler.isAddContact(eSrc);
           let isInboxUser =
             $(eSrc).hasClass('inbox_user_info') ||
             $(eSrc).hasClass('inbox_last_msg');
@@ -73,8 +56,8 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
       }
     };
 
-    eventUtility.addEvent(document, 'click', handleEvent);
-    eventUtility.addEvent(document, 'keyup', handleEvent);
+    EventManager.addEvent(document, 'click', handleEvent);
+    EventManager.addEvent(document, 'keyup', handleEvent);
 
     socket.on('connect', async () => {
       await contactsHandler.loadLatestMessage();
@@ -105,31 +88,15 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
     socket.on('message', async (args) => {
       let messageUpdate = MessageUpdate.Create(args);
 
-      let targetUser = $('#targetUser span').text();
-
-      targetUser = targetUser.replace('(', '');
-      targetUser = targetUser.replace(')', '');
-
-      let targetUserArr = targetUser.split(' ');
-
-      let firstMessage = true;
-
-      await messagesHandler.appendMessage(args);
-      await contactsHandler.updateLastMessage(args);
-      await messagesHandler.displayMessages(targetUserArr);
+      await messagesHandler.appendMessage(messageUpdate);
+      await contactsHandler.updateLastMessage(messageUpdate);
+      await messagesHandler.displayMessages();
 
       messagesHandler.scrollToLatest();
     });
+
+    EventManager.addEvent(window, 'load', Utils.resizeChatFrame);
+    EventManager.addEvent(window, 'resize', Utils.resizeChatFrame);
   });
-
-  class MessageUpdate {
-    static Create(data) {
-      console.log(data);
-      return JSON.parse(data);
-    }
-  }
-
-  eventUtility.addEvent(window, 'load', Utils.resizeChatFrame);
-  eventUtility.addEvent(window, 'resize', Utils.resizeChatFrame);
 </script>
 {% endif %} {% endblock %}

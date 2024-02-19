@@ -1,7 +1,9 @@
+import os
+
 import pytest
 from testcontainers.postgres import PostgresContainer
 
-from app import create_app
+from app import create_app_test
 
 # class TestPostgresInteraction(unittest.TestCase):
 #     def setUp(self):
@@ -46,23 +48,27 @@ from app import create_app
 
 @pytest.fixture
 def client():
-    app = create_app()
-    with app.test_client() as client:
-        yield client
+    with PostgresContainer('postgres:latest') as container:
+        connection_uri = container.get_connection_url()
+
+        os.environ['SQLALCHEMY_DATABASE_URI'] = connection_uri
+        os.environ['PYWOCHAT_DATABASE_URI'] = connection_uri
+
+        app = create_app_test(connection_uri)
+        app.config.update({
+            "SQLALCHEMY_DATABASE_URI": connection_uri
+        })
+        with app.test_client() as client:
+            yield client
 
 
 def test_postgres_container(client):
+    # response = client.get("/auth/login")
+    response = client.post("/auth/register", data={
+        "firstname": "Jan",
+        "lastname": "Kerekesh",
+        "username": "jkerekesh",
+        "password": "123456"
+    })
 
-    with PostgresContainer('postgres:latest') as container:
-
-        connection_uri = container.get_connection_url()
-
-        # response = client.get("/auth/login")
-        response = client.post("/auth/register", data={
-            "firstname": "Jan",
-            "lastname": "Kerekesh",
-            "username": "jkerekesh",
-            "password": "123456"
-        })
-
-        assert response.status_code == 200
+    assert response.status_code == 302

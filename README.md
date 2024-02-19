@@ -4,7 +4,35 @@
 
 ## Description
 
-**Pywochat** is the name of the project created as a simple software solution to complete a Python workshop. The main purpose of the application is to talk to any person who has an account created in the application. All you have to do is create your account, log in and start chatting.
+**Pywochat** is the name of the project created as a simple software solution for the completion of the Python workshop held in the premises of the Faculty of Organization and Informatics in Varaždin. The main purpose of the application is to enable a conversation through a simple interface with any person who has created an account within the application. All you have to do is create your account, log in and start chatting.
+
+## Setting WSL and Docker
+
+```bat
+C:\Users\Antonio>wsl --version
+WSL version: 2.0.14.0
+Kernel version: 5.15.133.1-1
+WSLg version: 1.0.59
+MSRDC version: 1.2.4677
+Direct3D version: 1.611.1-81528511
+DXCore version: 10.0.25131.1002-220531-1700.rs-onecore-base2-hyp
+Windows version: 10.0.19045.4046
+```
+
+```bash
+acorluka@DESKTOP-FBPD4LO:/mnt/c/Users/Antonio$ cat /etc/os-release
+PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
+NAME="Debian GNU/Linux"
+VERSION_ID="12"
+VERSION="12 (bookworm)"
+VERSION_CODENAME=bookworm
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+```
+
+[Installation instructions](https://docs.docker.com/engine/install/debian/)
 
 ## How to run it?
 

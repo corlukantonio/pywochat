@@ -1,11 +1,19 @@
+dist: jammy
+
+addons:
+  apt:
+    sources:
+      - sourceline: 'deb https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable'
+    packages:
+      - docker
+
 language: python
 
 python:
-  - '3.6'
+  - '3.11'
 
 install:
   - pip install -r requirements.txt
-  - pip install packages/Flask-JSGlue
 
 script:
   - pytest

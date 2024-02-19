@@ -23,7 +23,7 @@ class User(db.Model):
     Username.
     '''
 
-    password = db.Column(db.VARCHAR(102), nullable=False)
+    password = db.Column(db.VARCHAR(162), nullable=False)
     '''
     Password.
     '''
