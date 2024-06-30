@@ -8,7 +8,7 @@ deprecation==2.1.0
 distlib==0.3.8
 dnspython==2.6.1
 docker==7.0.0
-eventlet==0.35.1
+eventlet==0.35.2
 filelock==3.13.1
 Flask==3.0.2
 -e git+https://github.com/corlukantonio/Flask-JSGlue.git@e49d34d6f6ff88cc5ccb74f25914c9166439e7cc#egg=Flask_JSGlue
