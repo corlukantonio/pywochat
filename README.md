@@ -121,6 +121,29 @@ Following the [installation instructions](https://docs.docker.com/engine/install
 docker run -e POSTGRES_PASSWORD=123456 -d postgres
 ```
 
+## Environment variables
+
+The environment variables required for this application are listed and described below.
+
+<table align="center">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PYWOCHAT_DATABASE_URI</td>
+      <td>Database URI.</td>
+    </tr>
+    <tr>
+      <td>PYWOCHAT_SECRET_KEY</td>
+      <td>Secret key.</td>
+    </tr>
+  </tbody>
+</table>
+
 ## How to run it?
 
 Before you start doing any of the following, make sure you have [PostgreSQL](https://www.postgresql.org/) and [Anaconda](https://www.anaconda.com/) installed on your computer.
