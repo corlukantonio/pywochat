@@ -185,25 +185,10 @@ pipenv install
 
 ### Setting the database
 
-Open the **pgAdmin** in your browser and create a new database called "**pywochat**". After creating the database, the next step is to create the necessary tables. Run the python interpreter.
+To create the database and tables (from the migrations), enter the following command.
 
 ```properties
-python
-```
-
-To create tables from the models defined in app.py, enter the following commands.
-
-```python
-from app import db
-```
-
-```python
-with app.app_context():
-  db.create_all()
-```
-
-```python
-exit()
+flask db upgrade
 ```
 
 ### And finally, run it!
