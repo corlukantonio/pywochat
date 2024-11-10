@@ -198,7 +198,3 @@ Navigate to the pywochat, and start the web application by typing the following.
 ```properties
 python app.py
 ```
-
-## The work is still in progress...
-
-Come and visit us next time.
