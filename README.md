@@ -1,5 +1,6 @@
 # pywochat
 
+[![Python CI](https://github.com/corlukantonio/pywochat/actions/workflows/ci.yml/badge.svg)](https://github.com/corlukantonio/pywochat/actions/workflows/ci.yml)
 [![Build Status](https://app.travis-ci.com/corlukantonio/pywochat.svg?branch=master)](https://app.travis-ci.com/corlukantonio/pywochat)
 
 ## Description
