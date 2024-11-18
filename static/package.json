@@ -30,10 +30,10 @@
     "vm-browserify": "^1.1.2"
   },
   "devDependencies": {
-    "@types/jquery": "^3.5.24",
+    "@types/jquery": "^3.5.32",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4",
-    "webpack-node-externals": "^3.0.0"
+    "webpack-dev-server": "^5.1.0"
   },
   "scripts": {
     "test": "jest"

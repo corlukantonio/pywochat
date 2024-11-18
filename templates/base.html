@@ -77,6 +77,10 @@
       src="{{ url_for('static', filename='js/errors/missingPropertyError.js') }}"
       type="module"
     ></script>
+    <script
+      src="{{ url_for('static', filename='js/errors/targetUserLengthError.js') }}"
+      type="module"
+    ></script>
 
     <!-- Models. -->
     <script
@@ -87,16 +91,20 @@
       src="{{ url_for('static', filename='js/models/messageUpdate.js') }}"
       type="module"
     ></script>
+    <script
+      src="{{ url_for('static', filename='js/models/targetUser.js') }}"
+      type="module"
+    ></script>
 
     <!-- Handlers. -->
     <script
       src="{{ url_for('static', filename='js/handlers/composeMessageHandler.js') }}"
       type="module"
     ></script>
-    <!-- <script
+    <script
       src="{{ url_for('static', filename='js/handlers/messagesHandler.js') }}"
       type="module"
-    ></script> -->
+    ></script>
     <script
       src="{{ url_for('static', filename='js/handlers/searchBarHandler.js') }}"
       type="module"

@@ -46,6 +46,8 @@ def add_contact(json: dict[str, Any]) -> None:
         VALUES (:user_1, :user_2)
         ''')
 
+    print(json)
+
     logged_in_user_username = json['loggedInUserUsername']
     found_contact_username = json['foundContact'][2]
 
@@ -67,7 +69,7 @@ def choose_contact(*json: Any) -> None:
         *json (tuple[Any]): JSON.
     '''
 
-    pass
+    print(json)
 
 
 @socketio.on('message')
@@ -81,6 +83,7 @@ def handle_message(msg: str, sender_username: str, target_user: list[str]) -> No
         target_user (list[str]): Target user.
     '''
 
+    print(sender_username)
     print(target_user)
 
     sender: Row[Any] | None = __get_user_by_username(sender_username)
@@ -157,7 +160,8 @@ def __get_message_update(msg: str, sender: Row[Any], receiver: Row[Any]) -> dict
 
 
 def create_app() -> Flask:
-    app: Flask = Flask(__name__, instance_relative_config=True)
+    app: Flask = Flask(
+        __name__, instance_relative_config=True)
     JSGlue(app)
     socketio: SocketIO = SocketIO(app)
 

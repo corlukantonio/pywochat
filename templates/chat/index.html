@@ -35,16 +35,25 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
             $(eSrc).hasClass('inbox_user_info') ||
             $(eSrc).hasClass('inbox_last_msg');
 
-          if (isInboxUser) contactsHandler.loadMessages();
-          if (eSrc.id == 'sendMsg') messagesHandler.sendMessage();
-          if (isAddContact) searchResultsHandler.addContact(eSrc);
+          if (isInboxUser) {
+            contactsHandler.loadMessages();
+          }
+          if (eSrc.id == 'sendMsg') {
+            messagesHandler.sendMessage();
+          }
+
+          if (isAddContact) {
+            searchResultsHandler.addContact(eSrc);
+          }
+
           searchResultsHandler.handleSearchResultsVisibility(isClickedOutside);
 
           break;
 
         case 'keyup':
-          if (eSrc.id == 'inputMsg' && event.which == '13')
+          if (eSrc.id == 'inputMsg' && event.which == '13') {
             messagesHandler.sendMessage();
+          }
 
           if (eSrc.id == 'searchedValue')
             searchResultsHandler.handleSearchResultsVisibility();

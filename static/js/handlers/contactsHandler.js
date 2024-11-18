@@ -1,13 +1,22 @@
 //@ts-check
 
+import { Utils } from '../utils.js';
 import { HeaderOnlineHandler } from './headerOnlineHandler.js';
 
 export class ContactsHandler {
   constructor(messagesHandler, socket) {
     this.messagesHandler = messagesHandler;
     this.socket = socket;
-    this.loggedInUserUsername =
-      HeaderOnlineHandler.getInstance().getLoggedInUserUsername();
+    this.loggedInUserUsername = null;
+
+    this.assignLoggedInUserUsername();
+  }
+
+  async assignLoggedInUserUsername() {
+    try {
+      this.loggedInUserUsername =
+        await HeaderOnlineHandler.getInstance().getLoggedInUserUsername();
+    } catch (error) {}
   }
 
   loadMessages = async () => {
@@ -104,4 +113,4 @@ export class ContactsHandler {
   getInboxLastMessages = async () => $('.inbox_last_msg').toArray();
 }
 
-window.ContactsHandler = ContactsHandler;
+globalThis.ContactsHandler = ContactsHandler;
