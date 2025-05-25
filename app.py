@@ -195,6 +195,7 @@ def create_app_test(connection_uri: str) -> Flask:
             __import__(import_module)
 
     app.config.from_object(ConfigTest)
+    app.secret_key = 'test-secret-key'
     app.config['SQLALCHEMY_DATABASE_URI'] = connection_uri
     app.register_blueprint(auth.bp)
     app.register_blueprint(chat.bp)
