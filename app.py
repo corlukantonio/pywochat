@@ -160,10 +160,9 @@ def __get_message_update(msg: str, sender: Row[Any], receiver: Row[Any]) -> dict
 
 
 def create_app() -> Flask:
-    app: Flask = Flask(
-        __name__, instance_relative_config=True)
+    app: Flask = Flask(__name__, instance_relative_config=True)
     JSGlue(app)
-    socketio: SocketIO = SocketIO(app)
+    socketio.init_app(app)
 
     model_files = glob.glob(os.path.join(
         os.path.dirname(__file__), 'models', '*.py'))
@@ -185,7 +184,7 @@ def create_app() -> Flask:
 def create_app_test(connection_uri: str) -> Flask:
     app: Flask = Flask(__name__, instance_relative_config=True)
     JSGlue(app)
-    socketio: SocketIO = SocketIO(app)
+    socketio.init_app(app)
 
     model_files = glob.glob(os.path.join(
         os.path.dirname(__file__), 'models', '*.py'))
@@ -256,8 +255,8 @@ def create_database_if_not_exists(database_uri: str, database_name: str = "pywoc
         print(f"Error: {e}. Unable to check or create the database.")
 
 
-with app.app_context():
-    create_database_if_not_exists(app.config['SQLALCHEMY_DATABASE_URI'])
+# with app.app_context():
+#     create_database_if_not_exists(app.config['SQLALCHEMY_DATABASE_URI'])
 #     db.create_all()
 
 if __name__ == '__main__':
