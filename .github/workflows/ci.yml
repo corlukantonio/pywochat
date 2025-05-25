@@ -12,11 +12,6 @@ jobs:
   test:
     runs-on: ubuntu-22.04
 
-    services:
-      docker:
-        image: docker:stable
-        options: --privileged
-
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -26,8 +21,19 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Install Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo usermod -aG docker $USER
+
       - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Run tests
-        run: pytest
+        env:
+          DOCKER_HOST: unix:///var/run/docker.sock
+        run: |
+          docker --version
+          pytest
