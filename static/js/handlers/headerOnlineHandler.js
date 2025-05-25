@@ -17,7 +17,9 @@ export class HeaderOnlineHandler {
     return HeaderOnlineHandler[headerOnlineHandlerInstance];
   };
 
-  getLoggedInUserUsername = async () => $('#loggedInUserUsername').text();
+  getLoggedInUserUsername = async () => {
+    return $('#loggedInUserUsername').text();
+  };
 }
 
-window.HeaderOnlineHandler = HeaderOnlineHandler;
+globalThis.HeaderOnlineHandler = HeaderOnlineHandler;

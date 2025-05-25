@@ -1,7 +1,5 @@
 //@ts-check
 
-import {} from 'jquery';
-
 const composeMessageHandlerInstance = Symbol('composeMessageHandlerInstance');
 
 export class ComposeMessageHandler {

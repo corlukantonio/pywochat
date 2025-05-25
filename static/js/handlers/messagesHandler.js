@@ -1,7 +1,5 @@
 //@ts-check
 
-import {} from 'jquery';
-import { Socket } from 'socket.io';
 import { TargetUser } from '../models/targetUser.js';
 import { Utils } from '../utils.js';
 import { ComposeMessageHandler } from './composeMessageHandler.js';
@@ -16,14 +14,23 @@ export class MessagesHandler {
   constructor(socket) {
     this.composeMessageHandler = ComposeMessageHandler.getInstance();
     this.socket = socket;
-    this.loggedInUserUsername =
-      HeaderOnlineHandler.getInstance().getLoggedInUserUsername();
+    this.loggedInUserUsername = null;
+
+    this.assignLoggedInUserUsername();
+  }
+
+  async assignLoggedInUserUsername() {
+    try {
+      this.loggedInUserUsername =
+        await HeaderOnlineHandler.getInstance().getLoggedInUserUsername();
+    } catch (error) {}
   }
 
   /**
    * Sends message.
    */
   sendMessage = () => {
+    console.log('Ovo je send message funkcija');
     let message = this.composeMessageHandler.getInputMessage();
 
     if (message) {
@@ -163,5 +170,4 @@ export class MessagesHandler {
     $('#msgsView').scrollTop($('#msgsView')[0].scrollHeight);
 }
 
-// @ts-ignore
-window.MessagesHandler = MessagesHandler;
+globalThis.MessagesHandler = MessagesHandler;
