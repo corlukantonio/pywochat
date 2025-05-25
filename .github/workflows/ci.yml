@@ -30,5 +30,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Docker info
+        run: |
+          docker version
+          docker info
+          echo "DOCKER_HOST=$DOCKER_HOST"
+
       - name: Run tests
         run: pytest
