@@ -46,17 +46,16 @@ def add_contact(json: dict[str, Any]) -> None:
         VALUES (:user_1, :user_2)
         ''')
 
-    print(json)
-
     logged_in_user_username = json['loggedInUserUsername']
     found_contact_username = json['foundContact'][2]
 
-    db.session.execute(
-        sql, {'user_1': found_contact_username, 'user_2': logged_in_user_username})
-    db.session.commit()
+    insert_params_list: list[dict[str, Any]] = [
+        {'user_1': found_contact_username, 'user_2': logged_in_user_username},
+        {'user_1': logged_in_user_username, 'user_2': found_contact_username}]
 
-    db.session.execute(
-        sql, {'user_1': logged_in_user_username, 'user_2': found_contact_username})
+    for insert_params in insert_params_list:
+        db.session.execute(sql, insert_params)
+
     db.session.commit()
 
 
@@ -87,7 +86,7 @@ def handle_message(msg: str, sender_username: str, target_user: list[str]) -> No
     print(target_user)
 
     sender: Row[Any] | None = __get_user_by_username(sender_username)
-    receiver: Row[Any] | None = __get_user_by_username(target_user["username"])
+    receiver: Row[Any] | None = __get_user_by_username(target_user['username'])
 
     if sender is None:
         raise ValueError('Sender cannot be None.')
@@ -146,39 +145,51 @@ def __insert_message(msg: str, sender: Row[Any], receiver: Row[Any]) -> None:
 
 
 def __get_message_update(msg: str, sender: Row[Any], receiver: Row[Any]) -> dict[str, Any]:
+    '''
+    Gets message update.
+
+    Parameters:
+        msg (str): Message.
+        sender (Row[Any]): Sender.
+        receiver (Row[Any]): Receiver.
+
+    Returns:
+        dict[str, Any]: Message update.
+    '''
+
     return {
-        "message": msg,
-        "sender": {
-            "id": sender.id,
-            "username": sender.username
+        'message': msg,
+        'sender': {
+            'id': sender.id,
+            'username': sender.username
         },
-        "receiver": {
-            "id": receiver.id,
-            "username": receiver.username
+        'receiver': {
+            'id': receiver.id,
+            'username': receiver.username
         }
     }
 
 
-def create_app() -> Flask:
-    app: Flask = Flask(__name__, instance_relative_config=True)
-    JSGlue(app)
-    socketio.init_app(app)
+# def create_app() -> Flask:
+#     app: Flask = Flask(__name__, instance_relative_config=True)
+#     JSGlue(app)
+#     socketio.init_app(app)
 
-    model_files = glob.glob(os.path.join(
-        os.path.dirname(__file__), 'models', '*.py'))
-    for model_file in model_files:
-        if not model_file.endswith('__init__.py'):
-            import_name = os.path.basename(model_file)[:-3]
-            import_module = f'models.{import_name}'
-            __import__(import_module)
+#     model_files = glob.glob(os.path.join(
+#         os.path.dirname(__file__), 'models', '*.py'))
+#     for model_file in model_files:
+#         if not model_file.endswith('__init__.py'):
+#             import_name = os.path.basename(model_file)[:-3]
+#             import_module = f'models.{import_name}'
+#             __import__(import_module)
 
-    app.config.from_object(Config)
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(chat.bp)
-    app.add_url_rule('/', endpoint='index')
-    db.init_app(app)
+#     app.config.from_object(Config)
+#     app.register_blueprint(auth.bp)
+#     app.register_blueprint(chat.bp)
+#     app.add_url_rule('/', endpoint='index')
+#     db.init_app(app)
 
-    return app
+#     return app
 
 
 def create_app_test(connection_uri: str) -> Flask:
@@ -256,9 +267,9 @@ def create_database_if_not_exists(database_uri: str, database_name: str = "pywoc
         print(f"Error: {e}. Unable to check or create the database.")
 
 
-# with app.app_context():
-#     create_database_if_not_exists(app.config['SQLALCHEMY_DATABASE_URI'])
-#     db.create_all()
+with app.app_context():
+    create_database_if_not_exists(app.config['SQLALCHEMY_DATABASE_URI'])
+    db.create_all()
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0')
