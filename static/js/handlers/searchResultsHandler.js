@@ -15,8 +15,16 @@ export class SearchResultsHandler {
   constructor(socket, loggedInUserUsername) {
     this.searchInputHandler = SearchInputHandler.getInstance();
     this.socket = socket;
-    this.loggedInUserUsername =
-      HeaderOnlineHandler.getInstance().getLoggedInUserUsername();
+    this.loggedInUserUsername = null;
+
+    this.assignLoggedInUserUsername();
+  }
+
+  async assignLoggedInUserUsername() {
+    try {
+      this.loggedInUserUsername =
+        await HeaderOnlineHandler.getInstance().getLoggedInUserUsername();
+    } catch (error) {}
   }
 
   /**
@@ -74,7 +82,7 @@ export class SearchResultsHandler {
    *
    * @param {EventTarget} eSrc
    */
-  addContact = (eSrc) => {
+  addContact = async (eSrc) => {
     Utils.setToAdded(eSrc);
 
     let foundContact = this.getFoundContact();

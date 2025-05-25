@@ -31,15 +31,15 @@ class Auth:
             username: str | None = request.form['username']
             password: str | None = request.form['password']
 
-            error: str | None = self.__get_register_error_message(firstname, lastname,
-                                                                  username, password)
+            error: str | None = self.__get_register_error_message(
+                firstname, lastname, username, password)
 
             if error is None:
                 self.__insert_user(firstname, lastname, username, password)
 
                 return redirect(url_for('auth.login'))
 
-            flash(error)
+            flash(error, 'error')
 
         return render_template('auth/register.html')
 
@@ -86,7 +86,8 @@ class Auth:
             Row[Any] | None: User ID.
         '''
 
-        sql: TextClause = text(f'SELECT id FROM {User.__tablename__} WHERE username = :username')
+        sql: TextClause = text(
+            f'SELECT id FROM {User.__tablename__} WHERE username = :username')
         params: dict[str, Any] = {'username': username}
 
         return db.session.execute(sql, params).fetchone()
@@ -175,7 +176,8 @@ class Auth:
             Row[Any] | None: User ID.
         '''
 
-        sql: TextClause = text(f'SELECT * FROM {User.__tablename__} WHERE username = :username')
+        sql: TextClause = text(
+            f'SELECT * FROM {User.__tablename__} WHERE username = :username')
         params: dict[str, Any] = {'username': username}
 
         return db.session.execute(sql, params).fetchone()
@@ -202,7 +204,8 @@ class Auth:
         if user_id is None:
             g.user = None
         else:
-            sql: TextClause = text(f'SELECT * FROM {User.__tablename__} WHERE id = :id')
+            sql: TextClause = text(
+                f'SELECT * FROM {User.__tablename__} WHERE id = :id')
             params: dict[str, Any] = {'id': user_id}
             g.user = db.session.execute(sql, params).fetchone()
 

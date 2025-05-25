@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
+flask = "==3.1.1"
 flask-jsglue = {editable = true, ref = "e49d34d6f6ff88cc5ccb74f25914c9166439e7cc", git = "git+https://github.com/corlukantonio/Flask-JSGlue.git"}
-flask-socketio = "*"
+flask-socketio = "==5.5.1"
 flask-sqlalchemy = "*"
 gunicorn = "*"
 eventlet = "*"

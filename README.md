@@ -118,7 +118,7 @@ cat /etc/os-release
 Following the [installation instructions](https://docs.docker.com/engine/install/debian/) for Debian you should have Docker set up and ready to run the containers needed for development. Now to provide the infrastructure for the application, start the docker container by executing the command below.
 
 ```properties
-docker run -e POSTGRES_PASSWORD=123456 -d postgres
+docker run -p 5433:5432 -e POSTGRES_PASSWORD=123456 -d postgres
 ```
 
 ## Environment variables
