@@ -267,9 +267,9 @@ def create_database_if_not_exists(database_uri: str, database_name: str = "pywoc
         print(f"Error: {e}. Unable to check or create the database.")
 
 
-with app.app_context():
-    create_database_if_not_exists(app.config['SQLALCHEMY_DATABASE_URI'])
-    db.create_all()
+# with app.app_context():
+#     create_database_if_not_exists(app.config['SQLALCHEMY_DATABASE_URI'])
+#     db.create_all()
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0')
