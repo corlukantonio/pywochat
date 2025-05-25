@@ -12,11 +12,6 @@ jobs:
   test:
     runs-on: ubuntu-22.04
 
-    services:
-      docker:
-        image: docker:stable
-        options: --privileged
-
     steps:
       - name: Check out code
         uses: actions/checkout@v3
