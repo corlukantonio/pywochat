@@ -12,6 +12,9 @@ jobs:
   test:
     runs-on: ubuntu-22.04
 
+    env:
+      DOCKER_HOST: unix:///var/run/docker.sock
+
     steps:
       - name: Check out code
         uses: actions/checkout@v3
