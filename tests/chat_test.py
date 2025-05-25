@@ -36,7 +36,7 @@ def test_chat_with_contacts(client):
     contact_data = {
         'firstname': 'Ansu',
         'lastname': 'Fati',
-        'usernam': 'ansufati',
+        'username': 'ansufati',
         'password': '123456'
     }
     login_data = {
