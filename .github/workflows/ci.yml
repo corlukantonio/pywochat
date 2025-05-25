@@ -29,6 +29,15 @@ jobs:
         with:
           python-version: '3.11'
 
+<<<<<<< HEAD
+=======
+      - name: Install Docker (official script)
+        run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sh get-docker.sh
+          sudo usermod -aG docker $USER
+
+>>>>>>> d3b339522548534ef8567de331fbaac11e8855f6
       - name: Install dependencies
         run: pip install -r requirements.txt
 
