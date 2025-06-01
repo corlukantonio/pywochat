@@ -1,5 +1,6 @@
 //@ts-check
 
+import { Message } from '../models/message.js';
 import { TargetUser } from '../models/targetUser.js';
 import { Utils } from '../utils.js';
 import { ComposeMessageHandler } from './composeMessageHandler.js';
@@ -31,12 +32,17 @@ export class MessagesHandler {
    */
   sendMessage = () => {
     console.log('Ovo je send message funkcija');
-    let message = this.composeMessageHandler.getInputMessage();
+    let messageContent = this.composeMessageHandler.getInputMessage();
 
-    if (message) {
+    if (messageContent) {
       let targetUser = TargetUser.Create(this.getTargetUser());
+      let message = Message.create(
+        messageContent,
+        this.loggedInUserUsername,
+        targetUser
+      );
 
-      this.socket.send(message, this.loggedInUserUsername, targetUser);
+      this.socket.send(message);
       this.composeMessageHandler.emptyInputMessage();
     }
   };

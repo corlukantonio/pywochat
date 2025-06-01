@@ -88,15 +88,20 @@ def test_message(client):
         'username': register_data['username'],
         'password': register_data['password']
     }
-    message = 'Croatia should have won the World Cup in 2018!'
+    message_content = 'Croatia should have won the World Cup in 2018!'
     message_sender_username = register_data['username']
     message_receiver_user = {
         'firstname': contact_data['firstname'],
         'lastname': contact_data['lastname'],
         'username': contact_data['username']
     }
+    message = {
+        'content': message_content,
+        'senderUsername': message_sender_username,
+        'receiverUser': message_receiver_user
+    }
     expected_response = {
-        'message': message,
+        'message': message_content,
         'sender': {
             'id': 1,
             'username': message_sender_username
@@ -117,10 +122,7 @@ def test_message(client):
             contact_data['lastname'],
             contact_data['username']]
     })
-    socketio_client.send({
-        'message': message,
-        'senderUsername': message_sender_username,
-        'receiverUser': message_receiver_user})
+    socketio_client.send(message)
     response = json.loads(socketio_client.get_received()[0]['args'])
 
     assert response == expected_response, \

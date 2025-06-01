@@ -80,7 +80,7 @@ def handle_message(msg: dict[str, Any]) -> None:
         msg (dict[str, Any]): Message.
     '''
 
-    message: str = msg['message']
+    message_content: str = msg['content']
     sender_username: str = msg['senderUsername']
     receiver_username: str = msg['receiverUser']['username']
 
@@ -93,9 +93,9 @@ def handle_message(msg: dict[str, Any]) -> None:
     if receiver is None:
         raise ValueError('Receiver cannot be None.')
 
-    __insert_message(message, sender, receiver)
+    __insert_message(message_content, sender, receiver)
 
-    data = __get_message_update(message, sender, receiver)
+    data = __get_message_update(message_content, sender, receiver)
 
     send(json.dumps(data), broadcast=True)
 
