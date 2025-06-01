@@ -72,21 +72,20 @@ def choose_contact(*json: Any) -> None:
 
 
 @socketio.on('message')
-def handle_message(msg: str, sender_username: str, target_user: list[str]) -> None:
+def handle_message(msg: dict[str, Any]) -> None:
     '''
     Handles message.
 
     Parameters:
-        msg (str): Message.
-        sender_username (str): Sender username.
-        target_user (list[str]): Target user.
+        msg (dict[str, Any]): Message.
     '''
 
-    print(sender_username)
-    print(target_user)
+    message: str = msg['message']
+    sender_username: str = msg['senderUsername']
+    receiver_username: str = msg['receiverUser']['username']
 
     sender: Row[Any] | None = __get_user_by_username(sender_username)
-    receiver: Row[Any] | None = __get_user_by_username(target_user['username'])
+    receiver: Row[Any] | None = __get_user_by_username(receiver_username)
 
     if sender is None:
         raise ValueError('Sender cannot be None.')
@@ -94,9 +93,9 @@ def handle_message(msg: str, sender_username: str, target_user: list[str]) -> No
     if receiver is None:
         raise ValueError('Receiver cannot be None.')
 
-    __insert_message(msg, sender, receiver)
+    __insert_message(message, sender, receiver)
 
-    data = __get_message_update(msg, sender, receiver)
+    data = __get_message_update(message, sender, receiver)
 
     send(json.dumps(data), broadcast=True)
 
