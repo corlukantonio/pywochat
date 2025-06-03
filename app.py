@@ -9,8 +9,7 @@ from flask_migrate import Migrate, upgrade
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 
-import auth
-import chat
+from blueprints import auth, chat
 from chat_namespace import ChatNamespace
 from config import Config
 from config_test import ConfigTest
