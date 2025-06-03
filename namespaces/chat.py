@@ -10,7 +10,7 @@ from models.contact import Contact
 from models.message import Message
 
 
-class ChatNamespace(Namespace):
+class Chat(Namespace):
     def on_add_contact(self, json: dict[str, Any]) -> None:
         '''
         Adds contact.

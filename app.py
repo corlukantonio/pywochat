@@ -10,10 +10,10 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 
 from blueprints import auth, chat
-from chat_namespace import ChatNamespace
 from config import Config
 from config_test import ConfigTest
 from extensions import db, socketio
+from namespaces.chat import Chat
 
 file_path = os.path.dirname(__file__)
 model_path = os.path.join(file_path, 'models', '*.py')
@@ -52,7 +52,7 @@ def create_app_test(connection_uri: str) -> Flask:
     app: Flask = Flask(__name__, instance_relative_config=True)
     JSGlue(app)
     socketio.init_app(app)
-    socketio.on_namespace(ChatNamespace('/'))
+    socketio.on_namespace(Chat('/'))
 
     model_files = glob.glob(os.path.join(
         os.path.dirname(__file__), 'models', '*.py'))
@@ -113,7 +113,7 @@ if 'TESTING' not in os.environ:
     app: Flask = Flask(__name__, instance_relative_config=True)
     JSGlue(app)
     socketio.init_app(app)
-    socketio.on_namespace(ChatNamespace('/'))
+    socketio.on_namespace(Chat('/'))
 
     app.config.from_object(Config)
     app.register_blueprint(auth.bp)
