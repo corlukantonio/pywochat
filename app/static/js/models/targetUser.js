@@ -22,7 +22,7 @@ export class TargetUser {
    * @param {Array<string>} targetUser
    * @returns {TargetUser}
    */
-  static Create(targetUser) {
+  static create(targetUser) {
     if (targetUser.length !== 3) {
       throw new TargetUserLengthError();
     }

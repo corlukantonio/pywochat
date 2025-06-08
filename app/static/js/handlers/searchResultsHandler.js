@@ -1,6 +1,5 @@
 //@ts-check
 
-// import { Socket } from 'socket.io';
 import { Utils } from '../utils.js';
 import { HeaderOnlineHandler } from './headerOnlineHandler.js';
 import { SearchInputHandler } from './searchInputHandler.js';
@@ -9,7 +8,7 @@ export class SearchResultsHandler {
   /**
    * Constructor.
    *
-   * @param {*} socket
+   * @param {Socket} socket
    * @param {string} loggedInUserUsername
    */
   constructor(socket, loggedInUserUsername) {
@@ -20,6 +19,9 @@ export class SearchResultsHandler {
     this.assignLoggedInUserUsername();
   }
 
+  /**
+   * Assigns logged in user username.
+   */
   async assignLoggedInUserUsername() {
     try {
       this.loggedInUserUsername =
@@ -88,7 +90,7 @@ export class SearchResultsHandler {
     let foundContact = this.getFoundContact();
     let payload = {
       loggedInUserUsername: this.loggedInUserUsername,
-      foundContact,
+      foundContact: foundContact,
     };
 
     this.socket.emit('add_contact', payload);

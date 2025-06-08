@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    main: './js/handlers/messagesHandler.js',
+    main: './js/handlers/searchInputHandler.js',
   },
   output: {
     filename: '[name].bundle.js',
@@ -11,6 +11,9 @@ module.exports = {
   externals: {
     base64id: 'base64id',
     'socket.io': 'io', // Use the package name 'socket.io' and assign it to 'io'
+  },
+  devServer: {
+    hot: true,
   },
   resolve: {
     fallback: {

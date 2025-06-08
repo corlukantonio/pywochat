@@ -118,7 +118,7 @@ cat /etc/os-release
 Following the [installation instructions](https://docs.docker.com/engine/install/debian/) for Debian you should have Docker set up and ready to run the containers needed for development. Now to provide the infrastructure for the application, start the docker container by executing the command below.
 
 ```properties
-docker run -p 5433:5432 -e POSTGRES_PASSWORD=123456 -d postgres
+docker run -p 5433:5432 -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=pywochat -d postgres
 ```
 
 ## Environment variables
@@ -157,30 +157,26 @@ ENV = 'prod'
 
 ### Setting the virtualenv
 
-If you have not already installed **virtualenv** and **pipenv**, do so by opening the Anaconda Prompt and entering the following.
+If you have not already installed **virtualenv**, do so by opening the Anaconda Prompt and entering the following.
 
 ```properties
 pip install virtualenv
 ```
 
-```properties
-pip install pipenv
-```
-
 Navigate to the repository, create and then activate a new virtualenv inside it by entering the following.
 
 ```properties
-virtualenv pywochat --python=python3.11
+virtualenv pywochatenv --python=python3.11
 ```
 
 ```properties
-source pywochat/Scripts/activate
+source pywochatenv/Scripts/activate
 ```
 
 Install the dependencies inside of the newly created virtualenv.
 
 ```properties
-pipenv install
+pip install -r requirements.txt
 ```
 
 ### Setting the database

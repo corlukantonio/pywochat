@@ -8,8 +8,8 @@ from sqlalchemy.sql import text
 from werkzeug import Response
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from extensions import db
-from models.user import User
+from ..extensions import db
+from ..models.user import User
 
 
 class Auth:
@@ -87,7 +87,11 @@ class Auth:
         '''
 
         sql: TextClause = text(
-            f'SELECT id FROM {User.__tablename__} WHERE username = :username')
+            f'''
+            SELECT id
+            FROM {User.__tablename__}
+            WHERE username = :username
+            ''')
         params: dict[str, Any] = {'username': username}
 
         return db.session.execute(sql, params).fetchone()
@@ -177,7 +181,11 @@ class Auth:
         '''
 
         sql: TextClause = text(
-            f'SELECT * FROM {User.__tablename__} WHERE username = :username')
+            f'''
+            SELECT *
+            FROM {User.__tablename__}
+            WHERE username = :username
+            ''')
         params: dict[str, Any] = {'username': username}
 
         return db.session.execute(sql, params).fetchone()
@@ -205,7 +213,11 @@ class Auth:
             g.user = None
         else:
             sql: TextClause = text(
-                f'SELECT * FROM {User.__tablename__} WHERE id = :id')
+                f'''
+                SELECT *
+                FROM {User.__tablename__}
+                WHERE id = :id
+                ''')
             params: dict[str, Any] = {'id': user_id}
             g.user = db.session.execute(sql, params).fetchone()
 

@@ -1,6 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-
-from extensions import db
+from ..extensions import db
 
 
 class Message(db.Model):
@@ -18,7 +16,8 @@ class Message(db.Model):
     ID.
     '''
 
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    author_id = db.Column(
+        db.Integer, db.ForeignKey('users.id'), nullable=False)
     '''
     Author ID.
     '''

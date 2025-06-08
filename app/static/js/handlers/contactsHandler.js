@@ -4,6 +4,12 @@ import { Utils } from '../utils.js';
 import { HeaderOnlineHandler } from './headerOnlineHandler.js';
 
 export class ContactsHandler {
+  /**
+   * Constructor.
+   *
+   * @param {object} messagesHandler
+   * @param {object} socket
+   */
   constructor(messagesHandler, socket) {
     this.messagesHandler = messagesHandler;
     this.socket = socket;
@@ -12,6 +18,9 @@ export class ContactsHandler {
     this.assignLoggedInUserUsername();
   }
 
+  /**
+   * Assigns logged in user username.
+   */
   async assignLoggedInUserUsername() {
     try {
       this.loggedInUserUsername =
@@ -19,6 +28,9 @@ export class ContactsHandler {
     } catch (error) {}
   }
 
+  /**
+   * Loads messages.
+   */
   loadMessages = async () => {
     let targetUser = Utils.getTargetUsername();
 
@@ -51,13 +63,32 @@ export class ContactsHandler {
 
     this.messagesHandler.scrollToLatest();
 
-    this.socket.emit('choose_contact', this.loggedInUserUsername, targetUser);
+    let payload = {
+      loggedInUserUsername: this.loggedInUserUsername,
+      targetUser: targetUser,
+    };
+
+    this.socket.emit('choose_contact', payload);
   };
 
+  /**
+   * Shows message.
+   *
+   * @param {string} sentMessage
+   */
   showMessage = async (sentMessage) => $(sentMessage).css('display', 'block');
 
+  /**
+   * Hides message.
+   *
+   * @param {string} sentMessage
+   * @returns
+   */
   hideMessage = async (sentMessage) => $(sentMessage).css('display', 'none');
 
+  /**
+   * Loads latest message.
+   */
   loadLatestMessage = async () => {
     let sentMessages = await this.messagesHandler.getSentMessages();
     let messagesContent = await this.messagesHandler.getMessagesContent();
@@ -80,6 +111,11 @@ export class ContactsHandler {
     });
   };
 
+  /**
+   * Updates last message.
+   *
+   * @param {object} messageUpdate
+   */
   updateLastMessage = async (messageUpdate) => {
     let inboxUsers = await this.getInboxUsers();
     let userMatch = messageUpdate.sender.username === this.loggedInUserUsername;
@@ -106,10 +142,25 @@ export class ContactsHandler {
     });
   };
 
+  /**
+   * Gets inbox users.
+   *
+   * @returns {Promise<HTMLSpanElement>}
+   */
   getInboxUsers = async () => $('.inbox_user').toArray();
 
+  /**
+   * Gets inbox user informations.
+   *
+   * @returns {Promise<HTMLSpanElement>}
+   */
   getInboxUserInfos = async () => $('.inbox_user_info').toArray();
 
+  /**
+   * Gets inbox last messages.
+   *
+   * @returns {Promise<HTMLSpanElement>}
+   */
   getInboxLastMessages = async () => $('.inbox_last_msg').toArray();
 }
 

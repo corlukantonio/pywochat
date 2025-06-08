@@ -1,5 +1,6 @@
 //@ts-check
 
+import { Message } from '../models/message.js';
 import { TargetUser } from '../models/targetUser.js';
 import { Utils } from '../utils.js';
 import { ComposeMessageHandler } from './composeMessageHandler.js';
@@ -19,6 +20,9 @@ export class MessagesHandler {
     this.assignLoggedInUserUsername();
   }
 
+  /**
+   * Assigns logged in user username.
+   */
   async assignLoggedInUserUsername() {
     try {
       this.loggedInUserUsername =
@@ -30,13 +34,17 @@ export class MessagesHandler {
    * Sends message.
    */
   sendMessage = () => {
-    console.log('Ovo je send message funkcija');
-    let message = this.composeMessageHandler.getInputMessage();
+    let messageContent = this.composeMessageHandler.getInputMessage();
 
-    if (message) {
-      let targetUser = TargetUser.Create(this.getTargetUser());
+    if (messageContent) {
+      let targetUser = TargetUser.create(this.getTargetUser());
+      let message = Message.create(
+        messageContent,
+        this.loggedInUserUsername,
+        targetUser
+      );
 
-      this.socket.send(message, this.loggedInUserUsername, targetUser);
+      this.socket.send(message);
       this.composeMessageHandler.emptyInputMessage();
     }
   };
