@@ -17,6 +17,11 @@ export class HeaderOnlineHandler {
     return HeaderOnlineHandler[headerOnlineHandlerInstance];
   };
 
+  /**
+   * Gets logged in user username.
+   *
+   * @returns {Promise<string>}
+   */
   getLoggedInUserUsername = async () => {
     return $('#loggedInUserUsername').text();
   };

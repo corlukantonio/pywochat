@@ -1,3 +1,5 @@
+//@ts-check
+
 import { MissingPropertyError } from '../errors/missingPropertyError.js';
 
 export class MessageParticipant {
@@ -18,7 +20,7 @@ export class MessageParticipant {
    * @param {object} obj
    * @returns {MessageParticipant}
    */
-  static Create = (obj) => {
+  static create = (obj) => {
     if (!obj.hasOwnProperty('id')) {
       throw new MissingPropertyError('id');
     }

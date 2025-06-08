@@ -4,10 +4,10 @@ from flask import Blueprint, render_template, session
 from sqlalchemy import Row, TextClause
 from sqlalchemy.sql import text
 
-from extensions import db
-from models.contact import Contact
-from models.message import Message
-from models.user import User
+from ..extensions import db
+from ..models.contact import Contact
+from ..models.message import Message
+from ..models.user import User
 
 
 class Chat:

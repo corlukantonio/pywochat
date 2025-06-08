@@ -95,7 +95,7 @@ endblock %} {% endblock %} {% block content %} {% if g.user %} {% include
 
     // args = [msg, loggedInUserUsername, targetUser]
     socket.on('message', async (args) => {
-      let messageUpdate = MessageUpdate.Create(args);
+      let messageUpdate = MessageUpdate.create(args);
 
       await messagesHandler.appendMessage(messageUpdate);
       await contactsHandler.updateLastMessage(messageUpdate);

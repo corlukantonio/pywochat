@@ -25,7 +25,7 @@ export class MessageUpdate {
    * @param {object} arg3
    * @returns {MessageUpdate}
    */
-  static Create = (arg1, arg2 = null, arg3 = null) => {
+  static create = (arg1, arg2 = null, arg3 = null) => {
     if (typeof arg1 === 'string' && arg2 !== null && arg3 !== null) {
       return this.createWithParams(arg1, arg2, arg3);
     }
@@ -54,8 +54,8 @@ export class MessageUpdate {
       throw new Error('Receiver object has no message participant properties.');
     }
 
-    const senderConverted = MessageParticipant.Create(sender);
-    const receiverConverted = MessageParticipant.Create(receiver);
+    const senderConverted = MessageParticipant.create(sender);
+    const receiverConverted = MessageParticipant.create(receiver);
 
     return new MessageUpdate(message, senderConverted, receiverConverted);
   };
@@ -91,7 +91,7 @@ export class MessageUpdate {
         throw new MissingPropertyError('receiver');
       }
 
-      return MessageUpdate.Create(
+      return MessageUpdate.create(
         parsed['message'],
         parsed['sender'],
         parsed['receiver']
