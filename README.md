@@ -53,7 +53,7 @@ wsl --version
       </tr>
       <tr>
         <td>Windows version</td>
-        <td>10.0.19045.5073</td>
+        <td>10.0.19045.5917</td>
       </tr>
     </tbody>
   </table>
@@ -118,7 +118,11 @@ cat /etc/os-release
 Following the [installation instructions](https://docs.docker.com/engine/install/debian/) for Debian you should have Docker set up and ready to run the containers needed for development. Now to provide the infrastructure for the application, start the docker container by executing the command below.
 
 ```properties
-docker run -p 5433:5432 -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=pywochat -d postgres
+docker run -p 5433:5432 \
+  -e POSTGRES_USER=pywochat_user \
+  -e POSTGRES_PASSWORD=123456 \
+  -e POSTGRES_DB=pywochat \
+  -d postgres
 ```
 
 ## Environment variables
@@ -148,13 +152,6 @@ The environment variables required for this application are listed and described
 
 Before you start doing any of the following, make sure you have [PostgreSQL](https://www.postgresql.org/) and [Anaconda](https://www.anaconda.com/) installed on your computer.
 
-One important change to make within the [app.py](https://github.com/corlukantonio/pywochat/blob/master/app.py) document, if you are going to run it on localhost, is to change the ENV variable.
-
-```python
-# If running on localhost set this to 'dev'
-ENV = 'prod'
-```
-
 ### Setting the virtualenv
 
 If you have not already installed **virtualenv**, do so by opening the Anaconda Prompt and entering the following.
@@ -166,7 +163,7 @@ pip install virtualenv
 Navigate to the repository, create and then activate a new virtualenv inside it by entering the following.
 
 ```properties
-virtualenv pywochatenv --python=python3.11
+virtualenv pywochatenv --python=python3.13
 ```
 
 ```properties
@@ -192,5 +189,5 @@ flask db upgrade
 Navigate to the pywochat, and start the web application by typing the following.
 
 ```properties
-python app.py
+python run.py
 ```
