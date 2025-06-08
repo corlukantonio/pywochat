@@ -18,7 +18,7 @@ class DevelopmentConfig(Config):
     '''
 
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('PYWOCHAT_DEV_DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('PYWOCHAT_DATABASE_URI')
 
 
 class TestingConfig(Config):
@@ -27,7 +27,7 @@ class TestingConfig(Config):
     '''
 
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('PYWOCHAT_TEST_DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('PYWOCHAT_DATABASE_URI')
 
 
 class ProductionConfig(Config):
@@ -36,4 +36,4 @@ class ProductionConfig(Config):
     '''
 
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get('PYWOCHAT_PROD_DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('PYWOCHAT_DATABASE_URI')
