@@ -1,6 +1,6 @@
 import json
 
-from extensions import socketio
+from app.extensions import socketio
 
 
 def test_chat(client):
